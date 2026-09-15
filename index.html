@@ -444,25 +444,35 @@
   };
 
   const I18N = {
-    en: { name:"English", bio:"18 y/o · Hanoi<br>developer / gamer / designer", online:"online",
+    en: { name:"English", bio:"18 y/o · Hanoi<br>developer / gamer / designer",
+      status:{online:"online", idle:"idle", dnd:"do not disturb", offline:"offline"},
       footer:"made with ♥ on github pages", views:"views: ", style:"Style", language:"Language" },
-    vi: { name:"Tiếng Việt", bio:"18 tuổi · Hà Nội<br>developer / gamer / designer", online:"đang hoạt động",
+    vi: { name:"Tiếng Việt", bio:"18 tuổi · Hà Nội<br>developer / gamer / designer",
+      status:{online:"đang hoạt động", idle:"tạm vắng", dnd:"không làm phiền", offline:"ngoại tuyến"},
       footer:"làm bằng ♥ trên github pages", views:"lượt xem: ", style:"Giao diện", language:"Ngôn ngữ" },
-    ja: { name:"日本語", bio:"18歳 · ハノイ<br>developer / gamer / designer", online:"オンライン",
+    ja: { name:"日本語", bio:"18歳 · ハノイ<br>developer / gamer / designer",
+      status:{online:"オンライン", idle:"退席中", dnd:"取り込み中", offline:"オフライン"},
       footer:"github pagesで♥を込めて作成", views:"閲覧数: ", style:"スタイル", language:"言語" },
-    ko: { name:"한국어", bio:"18세 · 하노이<br>developer / gamer / designer", online:"온라인",
+    ko: { name:"한국어", bio:"18세 · 하노이<br>developer / gamer / designer",
+      status:{online:"온라인", idle:"자리비움", dnd:"방해금지", offline:"오프라인"},
       footer:"github pages에서 ♥로 제작", views:"조회수: ", style:"스타일", language:"언어" },
-    zh: { name:"中文", bio:"18岁 · 河内<br>developer / gamer / designer", online:"在线",
+    zh: { name:"中文", bio:"18岁 · 河内<br>developer / gamer / designer",
+      status:{online:"在线", idle:"离开", dnd:"请勿打扰", offline:"离线"},
       footer:"用 ♥ 制作于 github pages", views:"浏览量: ", style:"样式", language:"语言" },
-    fr: { name:"Français", bio:"18 ans · Hanoï<br>developer / gamer / designer", online:"en ligne",
+    fr: { name:"Français", bio:"18 ans · Hanoï<br>developer / gamer / designer",
+      status:{online:"en ligne", idle:"absent", dnd:"ne pas déranger", offline:"hors ligne"},
       footer:"fait avec ♥ sur github pages", views:"vues : ", style:"Style", language:"Langue" },
-    es: { name:"Español", bio:"18 años · Hanói<br>developer / gamer / designer", online:"en línea",
+    es: { name:"Español", bio:"18 años · Hanói<br>developer / gamer / designer",
+      status:{online:"en línea", idle:"ausente", dnd:"no molestar", offline:"desconectado"},
       footer:"hecho con ♥ en github pages", views:"vistas: ", style:"Estilo", language:"Idioma" },
-    de: { name:"Deutsch", bio:"18 Jahre · Hanoi<br>developer / gamer / designer", online:"online",
+    de: { name:"Deutsch", bio:"18 Jahre · Hanoi<br>developer / gamer / designer",
+      status:{online:"online", idle:"abwesend", dnd:"nicht stören", offline:"offline"},
       footer:"erstellt mit ♥ auf github pages", views:"aufrufe: ", style:"Stil", language:"Sprache" },
-    th: { name:"ไทย", bio:"18 ปี · ฮานอย<br>developer / gamer / designer", online:"ออนไลน์",
+    th: { name:"ไทย", bio:"18 ปี · ฮานอย<br>developer / gamer / designer",
+      status:{online:"ออนไลน์", idle:"ไม่อยู่", dnd:"ห้ามรบกวน", offline:"ออฟไลน์"},
       footer:"สร้างด้วย ♥ บน github pages", views:"เข้าชม: ", style:"สไตล์", language:"ภาษา" },
-    id: { name:"Bahasa Indonesia", bio:"18 tahun · Hanoi<br>developer / gamer / designer", online:"daring",
+    id: { name:"Bahasa Indonesia", bio:"18 tahun · Hanoi<br>developer / gamer / designer",
+      status:{online:"daring", idle:"idle", dnd:"jangan ganggu", offline:"luring"},
       footer:"dibuat dengan ♥ di github pages", views:"dilihat: ", style:"Gaya", language:"Bahasa" }
   };
 
@@ -489,19 +499,30 @@
     document.querySelectorAll('#themeList .menu-option').forEach(btn=>{
       btn.classList.toggle('active', btn.dataset.id === id);
     });
-    localStorage.setItem('site_theme', id);
   }
 
   let currentViews = 0;
+  let currentStatus = 'offline';
+  function setStatusDot(status){
+    currentStatus = status;
+    const colors = {online:'#22c55e', idle:'#eab308', dnd:'#ef4444', offline:'#6b7280'};
+    const c = colors[status] || colors.offline;
+    const dot = document.querySelector('.dot');
+    dot.style.background = c;
+    dot.style.boxShadow = '0 0 5px ' + c;
+    const l = I18N[document.documentElement.lang] || I18N.en;
+    document.getElementById('onlineLabel').textContent = l.status[status] || l.status.offline;
+  }
+
   function applyLanguage(code){
     const l = I18N[code] || I18N.en;
     document.documentElement.lang = code;
     document.getElementById('bioText').innerHTML = l.bio;
-    document.getElementById('onlineLabel').textContent = l.online;
     document.getElementById('footerText').textContent = l.footer;
     document.getElementById('viewCount').textContent = l.views + currentViews;
     document.getElementById('styleHeaderLabel').textContent = l.style;
     document.getElementById('langHeaderLabel').textContent = l.language;
+    document.getElementById('onlineLabel').textContent = l.status[currentStatus] || l.status.offline;
     document.querySelectorAll('#langList .menu-option').forEach(btn=>{
       btn.classList.toggle('active', btn.dataset.id === code);
     });
@@ -544,8 +565,7 @@
   setupCollapsible('langHeader', 'langList');
 
   const themeIds = Object.keys(THEMES);
-  const savedTheme = localStorage.getItem('site_theme');
-  applyTheme((savedTheme && THEMES[savedTheme]) ? savedTheme : themeIds[Math.floor(Math.random()*themeIds.length)]);
+  applyTheme(themeIds[Math.floor(Math.random()*themeIds.length)]);
 
   const savedLang = localStorage.getItem('site_lang');
   const browserLang = (navigator.language || 'en').split('-')[0];
@@ -562,6 +582,20 @@
     }
   }
   setTimeout(typeChar, 250);
+
+  // Discord live status via Lanyard (https://github.com/Phineas/lanyard)
+  // 1. Replace DISCORD_ID with your Discord user ID
+  // 2. Join the Lanyard Discord server so your presence gets tracked: discord.gg/UcC6RSJ7
+  const DISCORD_ID = "779217047220650005";
+  setStatusDot('offline');
+  if(DISCORD_ID !== "YOUR_DISCORD_ID"){
+    fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
+      .then(res=>res.json())
+      .then(data=>{
+        if(data.success) setStatusDot(data.data.discord_status);
+      })
+      .catch(()=> setStatusDot('offline'));
+  }
 
   currentViews = localStorage.getItem('bio_views');
   currentViews = currentViews ? parseInt(currentViews) + 1 : 1;

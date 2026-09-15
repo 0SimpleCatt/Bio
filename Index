@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tên_bạn</title>
+<style>
+  :root{
+    --bg-top: #f2f8fd;
+    --bg-bottom: #ffffff;
+    --cyan: #8ec5e8;
+    --cyan-dim: #6aa8d1;
+    --panel: rgba(255,255,255,0.65);
+    --text: #33475a;
+    --text-dim: #7c93a6;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+    font-family: 'Courier New', monospace;
+    color:var(--text);
+    overflow-x:hidden;
+  }
+
+  body{
+    background:
+      radial-gradient(circle at 15% 10%, rgba(142,197,232,0.22), transparent 45%),
+      radial-gradient(circle at 85% 15%, rgba(142,197,232,0.14), transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(142,197,232,0.12), transparent 50%),
+      linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    background-attachment: fixed;
+  }
+
+  /* mây trôi nhẹ */
+  .cloud{
+    position:fixed;
+    z-index:0;
+    background: rgba(255,255,255,0.75);
+    border-radius:50%;
+    filter: blur(14px);
+    pointer-events:none;
+  }
+  .cloud1{ width:220px; height:70px; top:8%; left:-10%; animation: floatCloud 40s linear infinite; }
+  .cloud2{ width:160px; height:55px; top:22%; left:-20%; animation: floatCloud 55s linear infinite; animation-delay:-15s; opacity:0.6; }
+  .cloud3{ width:280px; height:90px; top:70%; left:-15%; animation: floatCloud 65s linear infinite; animation-delay:-30s; opacity:0.5; }
+  @keyframes floatCloud{
+    from{ transform: translateX(0); }
+    to{ transform: translateX(140vw); }
+  }
+
+  .card{
+    position:relative;
+    z-index:1;
+    width:min(360px, 90vw);
+    margin: 8vh auto 4vh;
+    background:var(--panel);
+    border:1px solid rgba(38,194,212,0.35);
+    border-radius:14px;
+    padding:28px 24px 24px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 40px rgba(38,194,212,0.18);
+    text-align:center;
+    opacity:0;
+    transform: translateY(14px) scale(0.98);
+    animation: cardIn .7s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes cardIn{
+    to{ opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  .reveal{
+    opacity:0;
+    transform: translateY(8px);
+    animation: revealIn .55s ease forwards;
+  }
+  @keyframes revealIn{
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  .avatar{
+    width:88px;
+    height:88px;
+    border-radius:50%;
+    margin:0 auto 14px;
+    object-fit:cover;
+    border:2px solid var(--cyan);
+    box-shadow: 0 0 18px rgba(38,194,212,0.4);
+  }
+
+  .name{
+    font-size:19px;
+    letter-spacing:1px;
+    color:var(--text);
+    margin:0 0 2px;
+  }
+  .name .cursor{
+    display:inline-block;
+    width:8px;
+    background:var(--cyan);
+    margin-left:4px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .bio{
+    font-size:12.5px;
+    color:var(--text-dim);
+    margin:6px 0 18px;
+    line-height:1.5;
+  }
+
+  .badges{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+  }
+  .badge{
+    font-size:10px;
+    padding:3px 8px;
+    border:1px solid var(--cyan-dim);
+    border-radius:20px;
+    color:var(--cyan-dim);
+    background: rgba(38,194,212,0.08);
+  }
+
+  .music{
+    margin-bottom:6px;
+    border-radius:12px;
+    overflow:hidden;
+  }
+
+  .music-hint{
+    font-size:10px;
+    color:var(--text-dim);
+    margin:4px 0 18px;
+  }
+
+  .links{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .link{
+    display:block;
+    padding:11px 14px;
+    background:rgba(38,194,212,0.07);
+    border:1px solid rgba(38,194,212,0.3);
+    border-radius:6px;
+    color:var(--text);
+    text-decoration:none;
+    font-size:13px;
+    letter-spacing:0.5px;
+    transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    text-align:left;
+  }
+  .link::before{
+    content: "▸ ";
+    color:var(--cyan-dim);
+  }
+  .link:hover{
+    transform: translateX(4px);
+    border-color:var(--cyan);
+    background:rgba(38,194,212,0.14);
+  }
+
+  .footer{
+    margin-top:22px;
+    font-size:10px;
+    color:var(--text-dim);
+    letter-spacing:1px;
+  }
+
+  .views{
+    margin-top:6px;
+    font-size:10px;
+    color:var(--cyan-dim);
+  }
+</style>
+</head>
+<body>
+
+<div class="cloud cloud1"></div>
+<div class="cloud cloud2"></div>
+<div class="cloud cloud3"></div>
+
+<div class="card">
+  <!-- 1. Đổi ảnh: thay link bên dưới bằng link ảnh của bạn -->
+  <img class="avatar reveal" style="animation-delay:.15s" src="https://placehold.co/200x200/eafbfd/26c2d4?text=YOU" alt="avatar">
+
+  <!-- 2. Đổi tên -->
+  <p class="name reveal" style="animation-delay:.25s">tên_của_bạn<span class="cursor">&nbsp;</span></p>
+
+  <!-- 3. Đổi mô tả ngắn -->
+  <p class="bio reveal" style="animation-delay:.33s">18 tuổi · Hà Nội<br>developer / gamer / designer</p>
+
+  <!-- 4. Đổi các thẻ nhỏ -->
+  <div class="badges reveal" style="animation-delay:.4s">
+    <span class="badge">online</span>
+    <span class="badge">VN</span>
+  </div>
+
+  <!-- 5. Nhạc nền Spotify: đổi playlist bằng cách thay ID trong link (phần giữa /playlist/ và ?) -->
+  <div class="music reveal" style="animation-delay:.48s">
+    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/5ioA8AWwBgqLx8h4tNCkqX?utm_source=generator" width="100%" height="352" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    <p class="music-hint">bấm ▶ rồi bấm biểu tượng 🔀 để nghe ngẫu nhiên</p>
+  </div>
+
+  <!-- 6. Đổi các đường link (nhân bản thẻ <a> để thêm) -->
+  <div class="links reveal" style="animation-delay:.58s">
+    <a class="link" href="https://discord.com/users/000000000" target="_blank">Discord</a>
+    <a class="link" href="https://instagram.com/username" target="_blank">Instagram</a>
+    <a class="link" href="https://github.com/username" target="_blank">GitHub</a>
+    <a class="link" href="https://tiktok.com/@username" target="_blank">TikTok</a>
+  </div>
+
+  <p class="footer">made with ♥ on github pages</p>
+  <p class="views" id="viewCount">lượt xem: —</p>
+</div>
+
+<script>
+  // Đếm lượt xem đơn giản lưu trên trình duyệt (chỉ để trang trí, không đồng bộ giữa các máy)
+  let v = localStorage.getItem('bio_views');
+  v = v ? parseInt(v) + 1 : 1;
+  localStorage.setItem('bio_views', v);
+  document.getElementById('viewCount').textContent = 'lượt xem: ' + v;
+</script>
+
+</body>
+</html>

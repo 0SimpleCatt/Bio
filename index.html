@@ -44,7 +44,6 @@
     transition: background .4s ease, color .4s ease;
   }
 
-  /* ambient floating orbs, color follows accent */
   .orb{
     position:fixed;
     z-index:0;
@@ -134,6 +133,8 @@
     flex-wrap:wrap;
   }
   .badge{
+    display:inline-flex;
+    align-items:center;
     font-size:10px;
     padding:3px 8px;
     border:1px solid var(--accent-dim);
@@ -141,23 +142,26 @@
     color:var(--accent-dim);
     background: color-mix(in srgb, var(--accent) 10%, transparent);
   }
-
-  .music{
-    margin-bottom:6px;
-    border-radius:var(--radius);
-    overflow:hidden;
+  .dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#22c55e;
+    margin-right:5px;
+    box-shadow: 0 0 5px #22c55e;
   }
 
-  .music-hint{
-    font-size:10px;
-    color:var(--text-dim);
-    margin:4px 0 18px;
+  .music{
+    margin-bottom:18px;
+    border-radius:var(--radius);
+    overflow:hidden;
   }
 
   .links{
     display:flex;
     flex-direction:column;
     gap:10px;
+    margin-bottom:6px;
   }
   .link{
     display:block;
@@ -195,7 +199,6 @@
     color:var(--accent-dim);
   }
 
-  /* menu */
   .menu-btn{
     position:fixed;
     top:16px;
@@ -227,7 +230,7 @@
     top:64px;
     right:16px;
     z-index:30;
-    width:220px;
+    width:230px;
     max-height:70vh;
     overflow-y:auto;
     background:var(--panel);
@@ -235,20 +238,47 @@
     border-radius:12px;
     backdrop-filter: blur(var(--blur));
     box-shadow: var(--shadow);
-    padding:10px;
+    padding:6px;
     display:none;
   }
   .menu-panel.open{ display:block; }
 
-  .menu-section-title{
-    font-size:10px;
-    letter-spacing:1px;
-    color:var(--text-dim);
-    text-transform:uppercase;
-    margin:2px 6px 8px;
+  .menu-group + .menu-group{
+    border-top:1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+    margin-top:4px;
+    padding-top:4px;
   }
 
-  .theme-option{
+  .menu-group-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+    background:transparent;
+    border:none;
+    color:var(--text);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    padding:8px 6px;
+    cursor:pointer;
+  }
+  .menu-group-header .arrow{
+    transition: transform .2s ease;
+    color:var(--accent-dim);
+  }
+  .menu-group-header.open .arrow{
+    transform: rotate(180deg);
+  }
+
+  .menu-options{
+    display:none;
+    padding:2px 2px 8px;
+  }
+  .menu-options.open{ display:block; }
+
+  .menu-option{
     display:block;
     width:100%;
     text-align:left;
@@ -262,10 +292,10 @@
     font-size:11.5px;
     cursor:pointer;
   }
-  .theme-option:hover{
+  .menu-option:hover{
     background: color-mix(in srgb, var(--accent) 10%, transparent);
   }
-  .theme-option.active{
+  .menu-option.active{
     border-color:var(--accent);
     color:var(--accent);
     background: color-mix(in srgb, var(--accent) 12%, transparent);
@@ -281,9 +311,20 @@
 <button class="menu-btn" id="menuBtn" aria-label="Menu">
   <span></span><span></span><span></span>
 </button>
+
 <div class="menu-panel" id="menuPanel">
-  <div class="menu-section-title">Style</div>
-  <div id="themeList"></div>
+  <div class="menu-group">
+    <button class="menu-group-header" id="styleHeader">
+      <span id="styleHeaderLabel">Style</span><span class="arrow">▾</span>
+    </button>
+    <div class="menu-options" id="themeList"></div>
+  </div>
+  <div class="menu-group">
+    <button class="menu-group-header" id="langHeader">
+      <span id="langHeaderLabel">Language</span><span class="arrow">▾</span>
+    </button>
+    <div class="menu-options" id="langList"></div>
+  </div>
 </div>
 
 <div class="card">
@@ -291,26 +332,25 @@
 
   <p class="name reveal" style="animation-delay:.25s" id="typedName"><span class="cursor">&nbsp;</span></p>
 
-  <p class="bio reveal" style="animation-delay:.33s">18 y/o · Hanoi<br>developer / gamer / designer</p>
+  <p class="bio reveal" style="animation-delay:.33s" id="bioText">18 y/o · Hanoi<br>developer / gamer / designer</p>
 
   <div class="badges reveal" style="animation-delay:.4s">
-    <span class="badge">online</span>
-    <span class="badge">VN</span>
+    <span class="badge"><span class="dot"></span><span id="onlineLabel">online</span></span>
+    <span class="badge">🇻🇳 VN</span>
   </div>
 
-  <div class="music reveal" style="animation-delay:.48s">
-    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/5ioA8AWwBgqLx8h4tNCkqX?utm_source=generator" width="100%" height="352" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    <p class="music-hint">press ▶ then tap 🔀 to shuffle</p>
-  </div>
-
-  <div class="links reveal" style="animation-delay:.58s">
+  <div class="links reveal" style="animation-delay:.5s">
     <a class="link" href="https://discord.com/users/000000000" target="_blank">Discord</a>
     <a class="link" href="https://instagram.com/username" target="_blank">Instagram</a>
     <a class="link" href="https://github.com/username" target="_blank">GitHub</a>
     <a class="link" href="https://tiktok.com/@username" target="_blank">TikTok</a>
   </div>
 
-  <p class="footer">made with ♥ on github pages</p>
+  <div class="music reveal" style="animation-delay:.6s">
+    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/5ioA8AWwBgqLx8h4tNCkqX?utm_source=generator" width="100%" height="352" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+  </div>
+
+  <p class="footer" id="footerText">made with ♥ on github pages</p>
   <p class="views" id="viewCount">views: —</p>
 </div>
 
@@ -403,6 +443,29 @@
       nameSize:"12px", pixelated:true }
   };
 
+  const I18N = {
+    en: { name:"English", bio:"18 y/o · Hanoi<br>developer / gamer / designer", online:"online",
+      footer:"made with ♥ on github pages", views:"views: ", style:"Style", language:"Language" },
+    vi: { name:"Tiếng Việt", bio:"18 tuổi · Hà Nội<br>developer / gamer / designer", online:"đang hoạt động",
+      footer:"làm bằng ♥ trên github pages", views:"lượt xem: ", style:"Giao diện", language:"Ngôn ngữ" },
+    ja: { name:"日本語", bio:"18歳 · ハノイ<br>developer / gamer / designer", online:"オンライン",
+      footer:"github pagesで♥を込めて作成", views:"閲覧数: ", style:"スタイル", language:"言語" },
+    ko: { name:"한국어", bio:"18세 · 하노이<br>developer / gamer / designer", online:"온라인",
+      footer:"github pages에서 ♥로 제작", views:"조회수: ", style:"스타일", language:"언어" },
+    zh: { name:"中文", bio:"18岁 · 河内<br>developer / gamer / designer", online:"在线",
+      footer:"用 ♥ 制作于 github pages", views:"浏览量: ", style:"样式", language:"语言" },
+    fr: { name:"Français", bio:"18 ans · Hanoï<br>developer / gamer / designer", online:"en ligne",
+      footer:"fait avec ♥ sur github pages", views:"vues : ", style:"Style", language:"Langue" },
+    es: { name:"Español", bio:"18 años · Hanói<br>developer / gamer / designer", online:"en línea",
+      footer:"hecho con ♥ en github pages", views:"vistas: ", style:"Estilo", language:"Idioma" },
+    de: { name:"Deutsch", bio:"18 Jahre · Hanoi<br>developer / gamer / designer", online:"online",
+      footer:"erstellt mit ♥ auf github pages", views:"aufrufe: ", style:"Stil", language:"Sprache" },
+    th: { name:"ไทย", bio:"18 ปี · ฮานอย<br>developer / gamer / designer", online:"ออนไลน์",
+      footer:"สร้างด้วย ♥ บน github pages", views:"เข้าชม: ", style:"สไตล์", language:"ภาษา" },
+    id: { name:"Bahasa Indonesia", bio:"18 tahun · Hanoi<br>developer / gamer / designer", online:"daring",
+      footer:"dibuat dengan ♥ di github pages", views:"dilihat: ", style:"Gaya", language:"Bahasa" }
+  };
+
   function applyTheme(id){
     const t = THEMES[id];
     if(!t) return;
@@ -423,35 +486,71 @@
     r.setProperty('--tracking', t.tracking || '1px');
     r.setProperty('--name-size', t.nameSize || '19px');
     r.setProperty('--img-render', t.pixelated ? 'pixelated' : 'auto');
-
-    document.querySelectorAll('.theme-option').forEach(btn=>{
+    document.querySelectorAll('#themeList .menu-option').forEach(btn=>{
       btn.classList.toggle('active', btn.dataset.id === id);
     });
     localStorage.setItem('site_theme', id);
   }
 
-  // build menu
+  let currentViews = 0;
+  function applyLanguage(code){
+    const l = I18N[code] || I18N.en;
+    document.documentElement.lang = code;
+    document.getElementById('bioText').innerHTML = l.bio;
+    document.getElementById('onlineLabel').textContent = l.online;
+    document.getElementById('footerText').textContent = l.footer;
+    document.getElementById('viewCount').textContent = l.views + currentViews;
+    document.getElementById('styleHeaderLabel').textContent = l.style;
+    document.getElementById('langHeaderLabel').textContent = l.language;
+    document.querySelectorAll('#langList .menu-option').forEach(btn=>{
+      btn.classList.toggle('active', btn.dataset.id === code);
+    });
+    localStorage.setItem('site_lang', code);
+  }
+
   const themeListEl = document.getElementById('themeList');
   Object.keys(THEMES).forEach(id=>{
     const btn = document.createElement('button');
-    btn.className = 'theme-option';
+    btn.className = 'menu-option';
     btn.dataset.id = id;
     btn.textContent = THEMES[id].label;
-    btn.onclick = ()=>{ applyTheme(id); document.getElementById('menuPanel').classList.remove('open'); };
+    btn.onclick = ()=> applyTheme(id);
     themeListEl.appendChild(btn);
+  });
+
+  const langListEl = document.getElementById('langList');
+  Object.keys(I18N).forEach(code=>{
+    const btn = document.createElement('button');
+    btn.className = 'menu-option';
+    btn.dataset.id = code;
+    btn.textContent = I18N[code].name;
+    btn.onclick = ()=> applyLanguage(code);
+    langListEl.appendChild(btn);
   });
 
   document.getElementById('menuBtn').onclick = ()=>{
     document.getElementById('menuPanel').classList.toggle('open');
   };
 
-  // pick saved theme or random on load
-  const ids = Object.keys(THEMES);
-  const saved = localStorage.getItem('site_theme');
-  const initial = (saved && THEMES[saved]) ? saved : ids[Math.floor(Math.random()*ids.length)];
-  applyTheme(initial);
+  function setupCollapsible(headerId, optionsId){
+    const header = document.getElementById(headerId);
+    const options = document.getElementById(optionsId);
+    header.onclick = ()=>{
+      header.classList.toggle('open');
+      options.classList.toggle('open');
+    };
+  }
+  setupCollapsible('styleHeader', 'themeList');
+  setupCollapsible('langHeader', 'langList');
 
-  // typing effect for name
+  const themeIds = Object.keys(THEMES);
+  const savedTheme = localStorage.getItem('site_theme');
+  applyTheme((savedTheme && THEMES[savedTheme]) ? savedTheme : themeIds[Math.floor(Math.random()*themeIds.length)]);
+
+  const savedLang = localStorage.getItem('site_lang');
+  const browserLang = (navigator.language || 'en').split('-')[0];
+  applyLanguage((savedLang && I18N[savedLang]) ? savedLang : (I18N[browserLang] ? browserLang : 'en'));
+
   const nameText = "0SimpleCat";
   const nameEl = document.getElementById('typedName');
   let i = 0;
@@ -464,11 +563,10 @@
   }
   setTimeout(typeChar, 250);
 
-  // simple browser-local view counter
-  let v = localStorage.getItem('bio_views');
-  v = v ? parseInt(v) + 1 : 1;
-  localStorage.setItem('bio_views', v);
-  document.getElementById('viewCount').textContent = 'views: ' + v;
+  currentViews = localStorage.getItem('bio_views');
+  currentViews = currentViews ? parseInt(currentViews) + 1 : 1;
+  localStorage.setItem('bio_views', currentViews);
+  document.getElementById('viewCount').textContent = (I18N[document.documentElement.lang] || I18N.en).views + currentViews;
 </script>
 
 </body>

@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>tên_bạn</title>
+<title>0SimpleCat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg-top: #f2f8fd;
@@ -21,7 +24,7 @@
     margin:0;
     padding:0;
     min-height:100%;
-    font-family: 'Courier New', monospace;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
     color:var(--text);
     overflow-x:hidden;
   }
@@ -191,10 +194,10 @@
 
 <div class="card">
   <!-- 1. Đổi ảnh: thay link bên dưới bằng link ảnh của bạn -->
-  <img class="avatar reveal" style="animation-delay:.15s" src="https://placehold.co/200x200/eafbfd/26c2d4?text=YOU" alt="avatar">
+  <img class="avatar reveal" style="animation-delay:.15s" src="avatar.jpg" alt="avatar">
 
   <!-- 2. Đổi tên -->
-  <p class="name reveal" style="animation-delay:.25s">tên_của_bạn<span class="cursor">&nbsp;</span></p>
+  <p class="name reveal" style="animation-delay:.25s" id="typedName"><span class="cursor">&nbsp;</span></p>
 
   <!-- 3. Đổi mô tả ngắn -->
   <p class="bio reveal" style="animation-delay:.33s">18 tuổi · Hà Nội<br>developer / gamer / designer</p>
@@ -224,6 +227,19 @@
 </div>
 
 <script>
+  // Hiệu ứng gõ chữ cho tên
+  const nameText = "0SimpleCat";
+  const nameEl = document.getElementById('typedName');
+  let i = 0;
+  function typeChar(){
+    if(i < nameText.length){
+      nameEl.insertBefore(document.createTextNode(nameText[i]), nameEl.lastElementChild);
+      i++;
+      setTimeout(typeChar, 90);
+    }
+  }
+  setTimeout(typeChar, 250); // đợi card hiện lên rồi mới gõ
+
   // Đếm lượt xem đơn giản lưu trên trình duyệt (chỉ để trang trí, không đồng bộ giữa các máy)
   let v = localStorage.getItem('bio_views');
   v = v ? parseInt(v) + 1 : 1;

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- made by 0simplecat with 💕 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -125,6 +126,15 @@
     line-height:1.5;
   }
 
+  .quote{
+    font-size:11.5px;
+    color:var(--text-dim);
+    font-style:italic;
+    margin:0 0 16px;
+    line-height:1.5;
+    padding:0 6px;
+  }
+
   .badges{
     display:flex;
     justify-content:center;
@@ -143,12 +153,17 @@
     background: color-mix(in srgb, var(--accent) 10%, transparent);
   }
   .dot{
-    width:6px;
-    height:6px;
+    width:8px;
+    height:8px;
     border-radius:50%;
     background:#22c55e;
     margin-right:5px;
     box-shadow: 0 0 5px #22c55e;
+    transition: background .2s ease, box-shadow .2s ease;
+  }
+  .dot.idle{
+    -webkit-mask-image: radial-gradient(circle 2.6px at 6px 2.3px, transparent 99%, #000 100%);
+    mask-image: radial-gradient(circle 2.6px at 6px 2.3px, transparent 99%, #000 100%);
   }
 
   .music{
@@ -164,7 +179,8 @@
     margin-bottom:6px;
   }
   .link{
-    display:block;
+    display:flex;
+    align-items:center;
     padding:11px 14px;
     background: color-mix(in srgb, var(--accent) 7%, transparent);
     border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);
@@ -180,10 +196,29 @@
     content: "▸ ";
     color:var(--accent-dim);
   }
+  .link.has-icon::before{
+    content:none;
+  }
+  .link-icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    margin-right:7px;
+    color:var(--accent-dim);
+  }
+  .link-icon svg{ width:14px; height:14px; display:block; }
   .link:hover{
     transform: translateX(4px);
     border-color:var(--accent);
     background: color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  .link.disabled{
+    cursor:default;
+  }
+  .link.disabled:hover{
+    transform:none;
+    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
   }
 
   .footer{
@@ -339,11 +374,20 @@
     <span class="badge">🇻🇳 VN</span>
   </div>
 
+  <p class="quote reveal" style="animation-delay:.45s" id="quoteText"></p>
+
   <div class="links reveal" style="animation-delay:.5s">
-    <a class="link" href="https://discord.com/users/000000000" target="_blank">Discord</a>
-    <a class="link" href="https://instagram.com/username" target="_blank">Instagram</a>
-    <a class="link" href="https://github.com/username" target="_blank">GitHub</a>
-    <a class="link" href="https://tiktok.com/@username" target="_blank">TikTok</a>
+    <div class="link has-icon disabled" aria-disabled="true">
+      <span class="link-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 3 5 3 9.5c0 3 1.6 5.4 4 6.8-.2.6-.5 1.5-.7 2.2-.1.3.2.6.5.4 1.1-.5 2.3-1.2 3.2-1.9.7.1 1.3.1 2 .1s1.3 0 2-.1c.9.7 2.1 1.4 3.2 1.9.3.2.6-.1.5-.4-.2-.7-.5-1.6-.7-2.2 2.4-1.4 4-3.8 4-6.8C21 5 17.5 2 12 2zM9 12.5c-.8 0-1.5-.8-1.5-1.8S8.2 9 9 9s1.5.8 1.5 1.7-.7 1.8-1.5 1.8zm6 0c-.8 0-1.5-.8-1.5-1.8S14.2 9 15 9s1.5.8 1.5 1.7-.7 1.8-1.5 1.8z"/></svg></span>
+      khoaaaabeo
+    </div>
+    <a class="link has-icon" href="https://www.facebook.com/share/1BpE677ybK/" target="_blank">
+      <span class="link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9.5"/><text x="12" y="16" font-size="11" text-anchor="middle" font-family="Arial, sans-serif" fill="currentColor" stroke="none">f</text></svg></span>
+      nomnom
+    </a>
+    <a class="link" href="https://github.com/0SimpleCatt" target="_blank">GitHub</a>
+    <a class="link" href="https://www.tiktok.com/@silycatxd?_r=1&_t=ZS-99krPo1X81k" target="_blank">TikTok</a>
+    <a class="link" href="https://youtube.com/@simplecatxd?si=FiM49_x284IVZm87" target="_blank">YouTube</a>
   </div>
 
   <div class="music reveal" style="animation-delay:.6s">
@@ -476,6 +520,26 @@
       footer:"dibuat dengan ♥ di github pages", views:"dilihat: ", style:"Gaya", language:"Bahasa" }
   };
 
+  const QUOTES = [
+    { t:"Cố gắng hôm nay, mỉm cười ngày mai.", s:"Ngạn ngữ Việt Nam" },
+    { t:"Đường đi khó, không khó vì ngăn sông cách núi.", s:"Nguyễn Bá Học" },
+    { t:"The best time to plant a tree was 20 years ago, the second best is now.", s:"Tục ngữ" },
+    { t:"Không có gì là không thể, chỉ là chưa đủ cố gắng.", s:"Sưu tầm" },
+    { t:"Fall seven times, stand up eight.", s:"Tục ngữ Nhật Bản" },
+    { t:"Mỗi ngày là một trang mới trong cuốn sách cuộc đời.", s:"Sưu tầm" },
+    { t:"Đi để trở về.", s:"Sưu tầm" },
+    { t:"Sự khác biệt giữa thường và phi thường chỉ là một chữ 'thêm'.", s:"Sưu tầm" },
+    { t:"Dream big, start small, act now.", s:"Sưu tầm" },
+    { t:"Chill vibes only.", s:"0SimpleCat" },
+    { t:"Code hôm nay, bug ngày mai, fix hoài không hết.", s:"0SimpleCat" },
+    { t:"Cứ đi rồi sẽ đến.", s:"Sưu tầm" }
+  ];
+
+  function renderQuote(){
+    const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+    document.getElementById('quoteText').textContent = '"' + q.t + '" — ' + q.s;
+  }
+
   function applyTheme(id){
     const t = THEMES[id];
     if(!t) return;
@@ -510,6 +574,7 @@
     const dot = document.querySelector('.dot');
     dot.style.background = c;
     dot.style.boxShadow = '0 0 5px ' + c;
+    dot.classList.toggle('idle', status === 'idle');
     const l = I18N[document.documentElement.lang] || I18N.en;
     document.getElementById('onlineLabel').textContent = l.status[status] || l.status.offline;
   }
@@ -571,6 +636,8 @@
   const browserLang = (navigator.language || 'en').split('-')[0];
   applyLanguage((savedLang && I18N[savedLang]) ? savedLang : (I18N[browserLang] ? browserLang : 'en'));
 
+  renderQuote();
+
   const nameText = "0SimpleCat";
   const nameEl = document.getElementById('typedName');
   let i = 0;
@@ -583,19 +650,18 @@
   }
   setTimeout(typeChar, 250);
 
-  // Discord live status via Lanyard (https://github.com/Phineas/lanyard)
-  // 1. Replace DISCORD_ID with your Discord user ID
-  // 2. Join the Lanyard Discord server so your presence gets tracked: discord.gg/UcC6RSJ7
   const DISCORD_ID = "779217047220650005";
   setStatusDot('offline');
-  if(DISCORD_ID !== "YOUR_DISCORD_ID"){
-    fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`)
+  function fetchStatus(){
+    fetch('https://api.lanyard.rest/v1/users/' + DISCORD_ID, { cache: 'no-store' })
       .then(res=>res.json())
       .then(data=>{
         if(data.success) setStatusDot(data.data.discord_status);
       })
       .catch(()=> setStatusDot('offline'));
   }
+  fetchStatus();
+  setInterval(fetchStatus, 20000);
 
   currentViews = localStorage.getItem('bio_views');
   currentViews = currentViews ? parseInt(currentViews) + 1 : 1;

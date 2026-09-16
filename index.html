@@ -7,7 +7,7 @@
 <title>0SimpleCat</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@400;600&family=Poppins:wght@400;500;600;700&family=Audiowide&family=Inter:wght@400;600;700&family=Quicksand:wght@500;600;700&family=Playfair+Display:wght@600;700&family=Space+Grotesk:wght@500;700&family=Rajdhani:wght@600;700&family=VT323&family=Press+Start+2P&family=Fraunces:wght@600;700&family=Bebas+Neue&family=Sora:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@400;600&family=Poppins:wght@400;500;600;700&family=Audiowide&family=Inter:wght@400;600;700&family=Quicksand:wght@500;600;700&family=Playfair+Display:wght@600;700&family=Space+Grotesk:wght@500;700&family=Rajdhani:wght@600;700&family=VT323&family=Press+Start+2P&family=Fraunces:wght@600;700&family=Bebas+Neue&family=Sora:wght@500;700&family=JetBrains+Mono:wght@400;500;700&family=Righteous&family=Comfortaa:wght@400;700&family=Creepster&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --font: 'JetBrains Mono', monospace;
@@ -26,6 +26,7 @@
     --tracking: 1px;
     --name-size: 19px;
     --img-render: auto;
+    --cursor: auto;
   }
 
   *{ box-sizing:border-box; }
@@ -43,6 +44,7 @@
     background: var(--bg);
     background-attachment: fixed;
     transition: background .4s ease, color .4s ease;
+    cursor: var(--cursor, auto);
   }
 
   .orb{
@@ -179,8 +181,7 @@
     margin-bottom:6px;
   }
   .link{
-    display:flex;
-    align-items:center;
+    display:block;
     padding:11px 14px;
     background: color-mix(in srgb, var(--accent) 7%, transparent);
     border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);
@@ -191,34 +192,16 @@
     letter-spacing:0.5px;
     transition: transform .12s ease, border-color .12s ease, background .12s ease;
     text-align:left;
+    cursor:pointer;
   }
   .link::before{
     content: "▸ ";
     color:var(--accent-dim);
   }
-  .link.has-icon::before{
-    content:none;
-  }
-  .link-icon{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    margin-right:7px;
-    color:var(--accent-dim);
-  }
-  .link-icon svg{ width:14px; height:14px; display:block; }
   .link:hover{
     transform: translateX(4px);
     border-color:var(--accent);
     background: color-mix(in srgb, var(--accent) 14%, transparent);
-  }
-  .link.disabled{
-    cursor:default;
-  }
-  .link.disabled:hover{
-    transform:none;
-    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
-    background: color-mix(in srgb, var(--accent) 7%, transparent);
   }
 
   .footer{
@@ -232,6 +215,52 @@
     margin-top:6px;
     font-size:10px;
     color:var(--accent-dim);
+  }
+
+  .clock-widget{
+    position:fixed;
+    top:16px;
+    left:16px;
+    z-index:30;
+    padding:9px 12px;
+    border-radius:10px;
+    border:1px solid var(--panel-border);
+    background:var(--panel);
+    backdrop-filter: blur(var(--blur));
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--text-dim);
+    white-space:nowrap;
+  }
+
+  .boot-overlay{
+    position:fixed;
+    inset:0;
+    z-index:60;
+    background:var(--panel);
+    backdrop-filter: blur(var(--blur));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:1;
+    transition:opacity .4s ease;
+  }
+  .boot-overlay.hidden{
+    opacity:0;
+    pointer-events:none;
+  }
+  .boot-text{
+    font-family: var(--font);
+    color:var(--accent);
+    font-size:14px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+  }
+
+  .countdown{
+    font-size:11px;
+    color:var(--accent-dim);
+    margin:0 0 16px;
   }
 
   .menu-btn{
@@ -265,7 +294,7 @@
     top:64px;
     right:16px;
     z-index:30;
-    width:230px;
+    width:240px;
     max-height:70vh;
     overflow-y:auto;
     background:var(--panel);
@@ -313,12 +342,18 @@
   }
   .menu-options.open{ display:block; }
 
+  .menu-option-row{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    margin-bottom:4px;
+  }
   .menu-option{
+    flex:1;
     display:block;
     width:100%;
     text-align:left;
     padding:8px 10px;
-    margin-bottom:4px;
     border:1px solid transparent;
     border-radius:8px;
     background:transparent;
@@ -335,6 +370,76 @@
     color:var(--accent);
     background: color-mix(in srgb, var(--accent) 12%, transparent);
   }
+  .song-link{
+    flex-shrink:0;
+    width:28px;
+    height:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:13px;
+    color:var(--accent-dim);
+  }
+  .song-link:hover{
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    z-index:50;
+    background:rgba(0,0,0,0.5);
+    display:none;
+    align-items:center;
+    justify-content:center;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal-box{
+    position:relative;
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:var(--radius);
+    backdrop-filter: blur(var(--blur));
+    box-shadow: var(--shadow);
+    padding:26px 30px;
+    text-align:center;
+    min-width:220px;
+  }
+  .modal-title{
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--text-dim);
+    margin:0 0 8px;
+  }
+  .modal-username{
+    font-size:19px;
+    color:var(--accent);
+    margin:0 0 16px;
+    font-weight:600;
+  }
+  .modal-copy{
+    background:var(--accent);
+    color:#0a0a0a;
+    border:none;
+    padding:8px 18px;
+    border-radius:8px;
+    font-family:'JetBrains Mono', monospace;
+    cursor:pointer;
+    font-size:12px;
+  }
+  .modal-close{
+    position:absolute;
+    top:8px;
+    right:10px;
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    font-size:14px;
+    cursor:pointer;
+  }
 </style>
 </head>
 <body>
@@ -342,6 +447,12 @@
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
 <div class="orb orb3"></div>
+
+<div class="boot-overlay hidden" id="bootOverlay">
+  <p class="boot-text" id="bootText">BOOTING...</p>
+</div>
+
+<div class="clock-widget" id="clockWidget">Hanoi --:--</div>
 
 <button class="menu-btn" id="menuBtn" aria-label="Menu">
   <span></span><span></span><span></span>
@@ -360,6 +471,20 @@
     </button>
     <div class="menu-options" id="langList"></div>
   </div>
+  <div class="menu-group">
+    <button class="menu-group-header" id="soundToggleBtn">
+      <span>Sound</span><span id="soundState">Off</span>
+    </button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="discordModal">
+  <div class="modal-box">
+    <button class="modal-close" id="closeDiscordModal">✕</button>
+    <p class="modal-title">Discord</p>
+    <p class="modal-username">khoaaaabeo</p>
+    <button class="modal-copy" id="copyDiscordBtn">Copy</button>
+  </div>
 </div>
 
 <div class="card">
@@ -376,15 +501,11 @@
 
   <p class="quote reveal" style="animation-delay:.45s" id="quoteText"></p>
 
+  <p class="countdown reveal" style="animation-delay:.47s" id="countdownText"></p>
+
   <div class="links reveal" style="animation-delay:.5s">
-    <div class="link has-icon disabled" aria-disabled="true">
-      <span class="link-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 3 5 3 9.5c0 3 1.6 5.4 4 6.8-.2.6-.5 1.5-.7 2.2-.1.3.2.6.5.4 1.1-.5 2.3-1.2 3.2-1.9.7.1 1.3.1 2 .1s1.3 0 2-.1c.9.7 2.1 1.4 3.2 1.9.3.2.6-.1.5-.4-.2-.7-.5-1.6-.7-2.2 2.4-1.4 4-3.8 4-6.8C21 5 17.5 2 12 2zM9 12.5c-.8 0-1.5-.8-1.5-1.8S8.2 9 9 9s1.5.8 1.5 1.7-.7 1.8-1.5 1.8zm6 0c-.8 0-1.5-.8-1.5-1.8S14.2 9 15 9s1.5.8 1.5 1.7-.7 1.8-1.5 1.8z"/></svg></span>
-      khoaaaabeo
-    </div>
-    <a class="link has-icon" href="https://www.facebook.com/share/1BpE677ybK/" target="_blank">
-      <span class="link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9.5"/><text x="12" y="16" font-size="11" text-anchor="middle" font-family="Arial, sans-serif" fill="currentColor" stroke="none">f</text></svg></span>
-      nomnom
-    </a>
+    <div class="link" id="discordLink">khoaaaabeo</div>
+    <a class="link" href="https://www.facebook.com/share/1BpE677ybK/" target="_blank">Nomnom</a>
     <a class="link" href="https://github.com/0SimpleCatt" target="_blank">GitHub</a>
     <a class="link" href="https://www.tiktok.com/@silycatxd?_r=1&_t=ZS-99krPo1X81k" target="_blank">TikTok</a>
     <a class="link" href="https://youtube.com/@simplecatxd?si=FiM49_x284IVZm87" target="_blank">YouTube</a>
@@ -399,123 +520,453 @@
 </div>
 
 <script>
+  function ytSearch(q){ return "https://www.youtube.com/results?search_query=" + encodeURIComponent(q); }
+  function cursorSVG(inner, size, hotX, hotY){
+    const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='" + size + "' height='" + size + "' viewBox='0 0 " + size + " " + size + "'>" + inner + "</svg>";
+    return "url(\"data:image/svg+xml," + encodeURIComponent(svg) + "\") " + hotX + " " + hotY + ", auto";
+  }
+
+  // ambient effect layer (falling petals, stars, etc — varies per theme)
+  const fxCanvas = document.createElement('canvas');
+  fxCanvas.style.cssText = 'position:fixed;inset:0;z-index:4;pointer-events:none;';
+  document.body.appendChild(fxCanvas);
+  const fx = fxCanvas.getContext('2d');
+  function resizeFx(){ fxCanvas.width = window.innerWidth; fxCanvas.height = window.innerHeight; }
+  resizeFx();
+  window.addEventListener('resize', resizeFx);
+
+  let fxParticles = [];
+  let fxType = null;
+
+  function makeParticle(type){
+    const w = fxCanvas.width, h = fxCanvas.height;
+    if(type === 'petals'){
+      return { x: Math.random()*w, y: Math.random()*h, r: 4+Math.random()*4,
+        speedY: 0.6+Math.random()*0.8, drift: Math.random()*Math.PI*2, sway: 0.5+Math.random(),
+        rot: Math.random()*360, rotSpeed: (Math.random()-0.5)*2, color: Math.random()>0.5 ? '#ffb7d1' : '#ffd4e6' };
+    }
+    if(type === 'stars'){
+      return { x: Math.random()*w, y: Math.random()*h, r: 0.6+Math.random()*1.4,
+        tw: Math.random()*Math.PI*2, twSpeed: 0.02+Math.random()*0.03 };
+    }
+    if(type === 'matrix'){
+      return { x: Math.random()*w, y: Math.random()*h, speedY: 2+Math.random()*3, len: 10+Math.random()*20 };
+    }
+    if(type === 'bubbles'){
+      return { x: Math.random()*w, y: h+Math.random()*h, r: 2+Math.random()*4,
+        speedY: -(0.5+Math.random()*1), speedX: (Math.random()-0.5)*0.3 };
+    }
+    if(type === 'bats'){
+      return { x: Math.random()*w, y: Math.random()*h*0.5, speedX: (Math.random()>0.5?1:-1)*(0.5+Math.random()),
+        speedY: (Math.random()-0.5)*0.3, size: 8+Math.random()*6, wing: Math.random()*10 };
+    }
+    if(type === 'pixels'){
+      return { x: Math.random()*w, y: Math.random()*h, size: 3+Math.random()*3,
+        speedY: 0.3+Math.random()*0.5, color: ['#fbbf24','#f5f5ff','#22c55e'][Math.floor(Math.random()*3)] };
+    }
+    if(type === 'sparkles-gold' || type === 'sparkles-neon'){
+      const colors = type === 'sparkles-gold' ? ['#ffd700','#f2e9d0'] : ['#00e5ff','#ff2bd6'];
+      return { x: Math.random()*w, y: Math.random()*h, r: 1+Math.random()*2,
+        tw: Math.random()*Math.PI*2, twSpeed: 0.03+Math.random()*0.05,
+        speedY: -(0.1+Math.random()*0.2), color: colors[Math.floor(Math.random()*colors.length)] };
+    }
+    if(type === 'dots'){
+      return { x: Math.random()*w, y: Math.random()*h, r: 1+Math.random()*1.5,
+        speedX: (Math.random()-0.5)*0.4, speedY: (Math.random()-0.5)*0.4, color:'#3b82f6' };
+    }
+    if(type === 'speedlines'){
+      return { x: Math.random()*w, y: Math.random()*h, len: 40+Math.random()*80,
+        speedX: -(6+Math.random()*8), color: Math.random()>0.5 ? 'rgba(255,255,255,0.5)' : 'rgba(239,68,68,0.5)' };
+    }
+    if(type === 'leaves'){
+      return { x: Math.random()*w, y: Math.random()*h, r: 4+Math.random()*4,
+        speedY: 0.5+Math.random()*0.7, drift: Math.random()*Math.PI*2, sway: 0.5+Math.random(),
+        rot: Math.random()*360, rotSpeed: (Math.random()-0.5)*2,
+        color: Math.random()>0.5 ? '#66bb6a' : '#d4a574' };
+    }
+    if(type === 'confetti'){
+      const colors = ['#ec4899','#facc15','#3b82f6','#22c55e','#a78bfa'];
+      return { x: Math.random()*w, y: Math.random()*h, size: 4+Math.random()*3,
+        speedY: 0.8+Math.random()*1, rot: Math.random()*360, rotSpeed: (Math.random()-0.5)*6,
+        color: colors[Math.floor(Math.random()*colors.length)] };
+    }
+    if(type === 'paint'){
+      const colors = ['#14b8a6','#f9a8d4','#fde68a','#93c5fd'];
+      return { x: Math.random()*w, y: Math.random()*h, r: 8+Math.random()*14,
+        speedX: (Math.random()-0.5)*0.15, speedY: (Math.random()-0.5)*0.15,
+        color: colors[Math.floor(Math.random()*colors.length)] };
+    }
+    if(type === 'spray'){
+      return { x: Math.random()*w, y: h+Math.random()*40, r: 1+Math.random()*1.5,
+        speedY: -(0.4+Math.random()*0.8), speedX: (Math.random()-0.5)*0.4,
+        color: Math.random()>0.5 ? '#facc15' : '#f5f5f5' };
+    }
+    if(type === 'grid'){
+      return { y: Math.random()*h, speedY: 1+Math.random()*1.5, alpha: 0.15+Math.random()*0.25 };
+    }
+    return { x: Math.random()*w, y: Math.random()*h };
+  }
+
+  function setEffect(type){
+    fxType = type || null;
+    const counts = { petals:26, stars:80, matrix:36, bubbles:22, bats:6, pixels:30,
+      'sparkles-gold':40, 'sparkles-neon':40, dots:26, speedlines:14, leaves:22, confetti:30, paint:10, spray:24, grid:8 };
+    fxParticles = type ? Array.from({length: counts[type] || 20}, ()=> makeParticle(type)) : [];
+  }
+
+  function drawFx(){
+    fx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+    const w = fxCanvas.width, h = fxCanvas.height;
+    if(fxType === 'petals'){
+      fxParticles.forEach(p=>{
+        p.y += p.speedY;
+        p.x += Math.sin(p.y*0.02 + p.drift) * p.sway * 0.5;
+        p.rot += p.rotSpeed;
+        if(p.y > h+10){ p.y = -10; p.x = Math.random()*w; }
+        fx.save();
+        fx.translate(p.x, p.y);
+        fx.rotate(p.rot * Math.PI/180);
+        fx.fillStyle = p.color;
+        fx.beginPath();
+        fx.ellipse(0, 0, p.r, p.r*0.6, 0, 0, Math.PI*2);
+        fx.fill();
+        fx.restore();
+      });
+    } else if(fxType === 'stars'){
+      fxParticles.forEach(p=>{
+        p.tw += p.twSpeed;
+        fx.fillStyle = `rgba(255,255,255,${0.4 + Math.sin(p.tw)*0.4})`;
+        fx.beginPath();
+        fx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        fx.fill();
+      });
+    } else if(fxType === 'matrix'){
+      fx.strokeStyle = 'rgba(57,255,136,0.5)';
+      fxParticles.forEach(p=>{
+        p.y += p.speedY;
+        if(p.y > h+p.len) p.y = -p.len;
+        fx.beginPath();
+        fx.moveTo(p.x, p.y);
+        fx.lineTo(p.x, p.y - p.len);
+        fx.stroke();
+      });
+    } else if(fxType === 'bubbles'){
+      fx.strokeStyle = 'rgba(255,255,255,0.6)';
+      fxParticles.forEach(p=>{
+        p.y += p.speedY;
+        p.x += p.speedX;
+        if(p.y < -10){ p.y = h+10; p.x = Math.random()*w; }
+        fx.beginPath();
+        fx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        fx.stroke();
+      });
+    } else if(fxType === 'bats'){
+      fx.fillStyle = '#1a0a00';
+      fxParticles.forEach(p=>{
+        p.x += p.speedX;
+        p.wing += 0.3;
+        if(p.x < -20) p.x = w+20;
+        if(p.x > w+20) p.x = -20;
+        const flap = Math.sin(p.wing) * p.size * 0.5;
+        fx.beginPath();
+        fx.moveTo(p.x, p.y);
+        fx.lineTo(p.x - p.size, p.y - flap);
+        fx.lineTo(p.x - p.size*0.3, p.y);
+        fx.lineTo(p.x + p.size*0.3, p.y);
+        fx.lineTo(p.x + p.size, p.y - flap);
+        fx.closePath();
+        fx.fill();
+      });
+    } else if(fxType === 'pixels'){
+      fxParticles.forEach(p=>{
+        p.y += p.speedY;
+        if(p.y > h+10) p.y = -10;
+        fx.fillStyle = p.color;
+        fx.fillRect(p.x, p.y, p.size, p.size);
+      });
+    } else if(fxType === 'pixels'){
+      fxParticles.forEach(p=>{
+        p.y += p.speedY;
+        if(p.y > h+10) p.y = -10;
+        fx.fillStyle = p.color;
+        fx.fillRect(p.x, p.y, p.size, p.size);
+      });
+    } else if(fxType === 'sparkles-gold' || fxType === 'sparkles-neon'){
+      fxParticles.forEach(p=>{
+        p.tw += p.twSpeed;
+        p.y += p.speedY;
+        if(p.y < -5) p.y = h+5;
+        fx.globalAlpha = 0.3 + Math.sin(p.tw)*0.5;
+        fx.fillStyle = p.color;
+        fx.beginPath();
+        fx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        fx.fill();
+        fx.globalAlpha = 1;
+      });
+    } else if(fxType === 'dots'){
+      fxParticles.forEach(p=>{
+        p.x += p.speedX; p.y += p.speedY;
+        if(p.x < 0) p.x = w; if(p.x > w) p.x = 0;
+        if(p.y < 0) p.y = h; if(p.y > h) p.y = 0;
+        fx.fillStyle = p.color;
+        fx.globalAlpha = 0.5;
+        fx.beginPath();
+        fx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        fx.fill();
+        fx.globalAlpha = 1;
+      });
+    } else if(fxType === 'speedlines'){
+      fxParticles.forEach(p=>{
+        p.x += p.speedX;
+        if(p.x < -p.len){ p.x = w+p.len; p.y = Math.random()*h; }
+        fx.strokeStyle = p.color;
+        fx.lineWidth = 2;
+        fx.beginPath();
+        fx.moveTo(p.x, p.y);
+        fx.lineTo(p.x + p.len, p.y);
+        fx.stroke();
+      });
+    } else if(fxType === 'leaves'){
+      fxParticles.forEach(p=>{
+        p.y += p.speedY;
+        p.x += Math.sin(p.y*0.02 + p.drift) * p.sway * 0.6;
+        p.rot += p.rotSpeed;
+        if(p.y > h+10){ p.y = -10; p.x = Math.random()*w; }
+        fx.save();
+        fx.translate(p.x, p.y);
+        fx.rotate(p.rot * Math.PI/180);
+        fx.fillStyle = p.color;
+        fx.beginPath();
+        fx.ellipse(0, 0, p.r, p.r*0.5, 0, 0, Math.PI*2);
+        fx.fill();
+        fx.restore();
+      });
+    } else if(fxType === 'confetti'){
+      fxParticles.forEach(p=>{
+        p.y += p.speedY;
+        p.rot += p.rotSpeed;
+        if(p.y > h+10){ p.y = -10; p.x = Math.random()*w; }
+        fx.save();
+        fx.translate(p.x, p.y);
+        fx.rotate(p.rot * Math.PI/180);
+        fx.fillStyle = p.color;
+        fx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+        fx.restore();
+      });
+    } else if(fxType === 'paint'){
+      fxParticles.forEach(p=>{
+        p.x += p.speedX; p.y += p.speedY;
+        if(p.x < -p.r) p.x = w+p.r; if(p.x > w+p.r) p.x = -p.r;
+        if(p.y < -p.r) p.y = h+p.r; if(p.y > h+p.r) p.y = -p.r;
+        fx.globalAlpha = 0.15;
+        fx.fillStyle = p.color;
+        fx.beginPath();
+        fx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        fx.fill();
+        fx.globalAlpha = 1;
+      });
+    } else if(fxType === 'spray'){
+      fxParticles.forEach(p=>{
+        p.y += p.speedY; p.x += p.speedX;
+        if(p.y < -10){ p.y = h+10; p.x = Math.random()*w; }
+        fx.globalAlpha = 0.5;
+        fx.fillStyle = p.color;
+        fx.beginPath();
+        fx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        fx.fill();
+        fx.globalAlpha = 1;
+      });
+    } else if(fxType === 'grid'){
+      fxParticles.forEach(p=>{
+        p.y += p.speedY;
+        if(p.y > h) p.y = 0;
+        fx.strokeStyle = `rgba(111,214,255,${p.alpha})`;
+        fx.beginPath();
+        fx.moveTo(0, p.y);
+        fx.lineTo(w, p.y);
+        fx.stroke();
+      });
+    }
+    requestAnimationFrame(drawFx);
+  }
+  drawFx();
+
   const THEMES = {
     "cyber-gaming": { label:"Cyber Gaming", font:"'Orbitron', sans-serif",
       bg:"radial-gradient(circle at 20% 20%, rgba(57,255,136,0.15), transparent 45%), radial-gradient(circle at 80% 80%, rgba(57,255,136,0.08), transparent 50%), linear-gradient(180deg,#050807,#0a0f0d)",
       panel:"rgba(10,20,15,0.72)", panelBorder:"rgba(57,255,136,0.35)", accent:"#39ff88", accentDim:"#22c467",
-      text:"#d9ffe9", textDim:"#7fae91", radius:"8px", shadow:"0 0 40px rgba(57,255,136,0.15)", blur:"10px" },
+      text:"#d9ffe9", textDim:"#7fae91", radius:"8px", shadow:"0 0 40px rgba(57,255,136,0.15)", blur:"10px",
+      song: ytSearch("cyberpunk gaming synthwave music") },
 
     "cosmic-space": { label:"Cosmic Space", font:"'Exo 2', sans-serif",
       bg:"radial-gradient(circle at 30% 20%, rgba(167,139,250,0.25), transparent 50%), radial-gradient(circle at 75% 70%, rgba(56,189,248,0.15), transparent 50%), linear-gradient(180deg,#0b0620,#04030c)",
       panel:"rgba(20,14,40,0.65)", panelBorder:"rgba(167,139,250,0.35)", accent:"#a78bfa", accentDim:"#7c5cd6",
-      text:"#ece7ff", textDim:"#9a8fc4", radius:"18px", shadow:"0 0 50px rgba(167,139,250,0.25)", blur:"10px" },
+      text:"#ece7ff", textDim:"#9a8fc4", radius:"18px", shadow:"0 0 50px rgba(167,139,250,0.25)", blur:"10px",
+      song: ytSearch("space ambient music deep focus"), effect:"stars" },
 
     "glassmorphism": { label:"Glassmorphism", font:"'Poppins', sans-serif",
       bg:"linear-gradient(135deg, #f9e0ff, #dff3ff, #e0fff5)",
       panel:"rgba(255,255,255,0.35)", panelBorder:"rgba(255,255,255,0.6)", accent:"#8b5cf6", accentDim:"#6d43d1",
-      text:"#3a2e52", textDim:"#7c6f96", radius:"22px", shadow:"0 8px 32px rgba(139,92,246,0.18)", blur:"22px" },
+      text:"#3a2e52", textDim:"#7c6f96", radius:"22px", shadow:"0 8px 32px rgba(139,92,246,0.18)", blur:"22px",
+      song: ytSearch("chill lofi glass ambient music"), effect:"bubbles" },
 
     "cyberpunk": { label:"Cyberpunk", font:"'Audiowide', sans-serif",
       bg:"radial-gradient(circle at 25% 15%, rgba(255,0,200,0.25), transparent 45%), radial-gradient(circle at 80% 85%, rgba(0,255,255,0.2), transparent 50%), linear-gradient(180deg,#0a0014,#000)",
       panel:"rgba(15,0,25,0.7)", panelBorder:"rgba(255,0,200,0.5)", accent:"#ff2bd6", accentDim:"#00e5ff",
-      text:"#fdf0ff", textDim:"#c78fd9", radius:"4px", shadow:"0 0 45px rgba(255,0,200,0.35), 0 0 30px rgba(0,229,255,0.25)", blur:"8px" },
+      text:"#fdf0ff", textDim:"#c78fd9", radius:"4px", shadow:"0 0 45px rgba(255,0,200,0.35), 0 0 30px rgba(0,229,255,0.25)", blur:"8px",
+      song: ytSearch("cyberpunk 2077 style music mix"), effect:"matrix",
+      cursor: cursorSVG("<line x1='12' y1='2' x2='12' y2='22' stroke='%23ff2bd6' stroke-width='2'/><line x1='2' y1='12' x2='22' y2='12' stroke='%2300e5ff' stroke-width='2'/>", 24, 12, 12),
+      sound:{ type:'sawtooth', freq:900, dur:0.08 } },
 
     "dark-minimal": { label:"Dark Minimal", font:"'Inter', sans-serif",
       bg:"linear-gradient(180deg,#050505,#111111)",
       panel:"rgba(20,20,20,0.6)", panelBorder:"rgba(255,255,255,0.12)", accent:"#ffffff", accentDim:"#9a9a9a",
-      text:"#f2f2f2", textDim:"#8a8a8a", radius:"4px", shadow:"0 4px 24px rgba(0,0,0,0.4)", blur:"6px" },
+      text:"#f2f2f2", textDim:"#8a8a8a", radius:"4px", shadow:"0 4px 24px rgba(0,0,0,0.4)", blur:"6px",
+      song: ytSearch("minimal dark ambient soundtrack") },
 
     "daily-life": { label:"Daily Life", font:"'Quicksand', sans-serif",
       bg:"linear-gradient(160deg,#fff6ec,#ffe8dd,#fff1e6)",
       panel:"rgba(255,255,255,0.7)", panelBorder:"rgba(255,138,101,0.3)", accent:"#ff8a65", accentDim:"#e46f4c",
-      text:"#5c4033", textDim:"#a08877", radius:"20px", shadow:"0 8px 30px rgba(255,138,101,0.2)", blur:"8px" },
+      text:"#5c4033", textDim:"#a08877", radius:"20px", shadow:"0 8px 30px rgba(255,138,101,0.2)", blur:"8px",
+      song: ytSearch("cozy daily life lofi music") },
 
     "nature-modern": { label:"Nature Modern", font:"'Poppins', sans-serif",
       bg:"linear-gradient(160deg,#eef7ee,#dff0e2,#f4fbf5)",
       panel:"rgba(255,255,255,0.65)", panelBorder:"rgba(76,175,125,0.35)", accent:"#4caf7d", accentDim:"#357e58",
-      text:"#264034", textDim:"#6f8b7c", radius:"16px", shadow:"0 8px 28px rgba(76,175,125,0.2)", blur:"8px" },
+      text:"#264034", textDim:"#6f8b7c", radius:"16px", shadow:"0 8px 28px rgba(76,175,125,0.2)", blur:"8px",
+      song: ytSearch("nature ambient calm music"), effect:"leaves" },
 
     "luxury": { label:"Luxury", font:"'Playfair Display', serif",
       bg:"linear-gradient(160deg,#0c0c0c,#1a1a1a)",
       panel:"rgba(15,15,15,0.75)", panelBorder:"rgba(212,175,55,0.5)", accent:"#d4af37", accentDim:"#a6841f",
       text:"#f2e9d0", textDim:"#a99a72", radius:"2px", shadow:"0 0 40px rgba(212,175,55,0.18)", blur:"6px",
-      transform:"uppercase", tracking:"2px", nameSize:"20px" },
+      transform:"uppercase", tracking:"2px", nameSize:"20px",
+      song: ytSearch("luxury lounge jazz music"), effect:"sparkles-gold",
+      cursor: cursorSVG("<polygon points='8,0 16,8 8,16 0,8' fill='%23d4af37'/>", 16, 8, 8),
+      sound:{ type:'sine', freq:1200, dur:0.25 } },
 
     "ai-future": { label:"AI Future", font:"'Space Grotesk', sans-serif",
       bg:"linear-gradient(160deg,#f4f8ff,#e4ecff,#ffffff)",
       panel:"rgba(255,255,255,0.6)", panelBorder:"rgba(59,130,246,0.35)", accent:"#3b82f6", accentDim:"#2563eb",
-      text:"#1c2b45", textDim:"#7288ac", radius:"12px", shadow:"0 8px 30px rgba(59,130,246,0.22)", blur:"10px" },
+      text:"#1c2b45", textDim:"#7288ac", radius:"12px", shadow:"0 8px 30px rgba(59,130,246,0.22)", blur:"10px",
+      song: ytSearch("futuristic ai synth music"), effect:"dots" },
 
     "racing": { label:"Racing", font:"'Rajdhani', sans-serif",
       bg:"linear-gradient(160deg,#0b0b0b,#1a0000,#0b0b0b)",
       panel:"rgba(20,10,10,0.72)", panelBorder:"rgba(239,68,68,0.5)", accent:"#ef4444", accentDim:"#b91c1c",
       text:"#fdeaea", textDim:"#c98f8f", radius:"4px", shadow:"0 0 40px rgba(239,68,68,0.25)", blur:"6px",
-      transform:"uppercase", tracking:"1.5px" },
+      transform:"uppercase", tracking:"1.5px",
+      song: ytSearch("racing game high energy music"), effect:"speedlines",
+      cursor: cursorSVG("<polygon points='0,0 16,8 0,16' fill='%23ef4444'/>", 16, 0, 8),
+      sound:{ type:'square', freq:200, dur:0.06 } },
 
     "retro-arcade": { label:"Retro Arcade", font:"'VT323', monospace",
       bg:"linear-gradient(160deg,#1a0033,#33004d,#1a0033)",
       panel:"rgba(30,0,50,0.65)", panelBorder:"rgba(0,229,255,0.45)", accent:"#00e5ff", accentDim:"#ff2bd6",
       text:"#eafcff", textDim:"#9fb8c9", radius:"10px", shadow:"0 0 40px rgba(0,229,255,0.3), 0 0 25px rgba(255,43,214,0.2)", blur:"6px",
-      nameSize:"26px" },
+      nameSize:"26px",
+      song: ytSearch("80s retro arcade synthwave"), effect:"sparkles-neon",
+      cursor: cursorSVG("<polygon points='10,0 20,10 10,20 0,10' fill='%2300e5ff' stroke='%23ff2bd6' stroke-width='1'/>", 20, 10, 10),
+      sound:{ type:'square', freq:660, dur:0.09 } },
 
     "social-hub": { label:"Social Hub", font:"'Poppins', sans-serif",
       bg:"linear-gradient(135deg,#ffe0f0,#ffe8d6,#e0f0ff)",
       panel:"rgba(255,255,255,0.6)", panelBorder:"rgba(236,72,153,0.35)", accent:"#ec4899", accentDim:"#be185d",
-      text:"#4a2b3a", textDim:"#9c7a8a", radius:"26px", shadow:"0 8px 30px rgba(236,72,153,0.2)", blur:"10px" },
+      text:"#4a2b3a", textDim:"#9c7a8a", radius:"26px", shadow:"0 8px 30px rgba(236,72,153,0.2)", blur:"10px",
+      song: ytSearch("upbeat pop party mix"), effect:"confetti" },
 
     "creative-studio": { label:"Creative Studio", font:"'Fraunces', serif",
       bg:"linear-gradient(150deg,#fff4dc,#ffe0cc,#fdeecb)",
       panel:"rgba(255,255,255,0.55)", panelBorder:"rgba(20,184,166,0.4)", accent:"#14b8a6", accentDim:"#0d8f81",
       text:"#3a2e1f", textDim:"#8a7a5f", radius:"14px", shadow:"0 8px 26px rgba(20,184,166,0.18)", blur:"8px",
-      borderStyle:"dashed" },
+      borderStyle:"dashed",
+      song: ytSearch("creative studio jazz hip hop beats"), effect:"paint" },
 
     "urban-street": { label:"Urban Street", font:"'Bebas Neue', sans-serif",
       bg:"linear-gradient(160deg,#1c1c1c,#2b2b2b)",
       panel:"rgba(30,30,30,0.75)", panelBorder:"rgba(250,204,21,0.5)", accent:"#facc15", accentDim:"#ca9a0c",
       text:"#f5f5f5", textDim:"#a3a3a3", radius:"2px", shadow:"0 6px 26px rgba(250,204,21,0.15)", blur:"4px",
-      transform:"uppercase", tracking:"1.5px", nameSize:"24px" },
+      transform:"uppercase", tracking:"1.5px", nameSize:"24px",
+      song: ytSearch("urban street hip hop beats"), effect:"spray" },
 
     "modern-tech": { label:"Modern Tech", font:"'Sora', sans-serif",
       bg:"linear-gradient(160deg,#f7f9fc,#eef1f7,#ffffff)",
       panel:"rgba(255,255,255,0.7)", panelBorder:"rgba(99,102,241,0.3)", accent:"#6366f1", accentDim:"#4338ca",
-      text:"#1e2233", textDim:"#767c94", radius:"14px", shadow:"0 8px 28px rgba(99,102,241,0.18)", blur:"10px" },
+      text:"#1e2233", textDim:"#767c94", radius:"14px", shadow:"0 8px 28px rgba(99,102,241,0.18)", blur:"10px",
+      song: ytSearch("modern tech corporate ambient music") },
 
     "pixel": { label:"Pixel", font:"'Press Start 2P', monospace",
       bg:"linear-gradient(180deg,#1a1a3d,#0d0d26)",
       panel:"rgba(20,20,50,0.85)", panelBorder:"#fbbf24", accent:"#fbbf24", accentDim:"#d19b0f",
       text:"#f5f5ff", textDim:"#9a9ac9", radius:"0px", shadow:"6px 6px 0 rgba(251,191,36,0.5)", blur:"0px",
-      nameSize:"12px", pixelated:true }
+      nameSize:"12px", pixelated:true,
+      song: ytSearch("8 bit chiptune music"), effect:"pixels",
+      cursor: cursorSVG("<rect width='16' height='16' fill='%23fbbf24' stroke='%23000' stroke-width='2'/>", 16, 8, 8),
+      sound:{ type:'square', freq:440, dur:0.07 } },
+
+    "vaporwave": { label:"Vaporwave", font:"'Righteous', sans-serif",
+      bg:"linear-gradient(135deg,#2b0a4e,#ff6ec7,#6fd6ff)",
+      panel:"rgba(40,10,70,0.55)", panelBorder:"rgba(255,110,199,0.5)", accent:"#ff6ec7", accentDim:"#6fd6ff",
+      text:"#fff0fb", textDim:"#d9a8d1", radius:"6px", shadow:"0 0 40px rgba(255,110,199,0.3), 0 0 25px rgba(111,214,255,0.25)", blur:"8px",
+      nameSize:"20px",
+      song: ytSearch("vaporwave aesthetic music mix"), effect:"grid" },
+
+    "ocean-breeze": { label:"Ocean Breeze", font:"'Comfortaa', sans-serif",
+      bg:"linear-gradient(160deg,#e0f7fa,#b2ebf2,#e0f7fa)",
+      panel:"rgba(255,255,255,0.6)", panelBorder:"rgba(0,172,193,0.35)", accent:"#00acc1", accentDim:"#007c91",
+      text:"#053b42", textDim:"#4f8790", radius:"20px", shadow:"0 8px 30px rgba(0,172,193,0.2)", blur:"10px",
+      song: ytSearch("ocean waves calm music"), effect:"bubbles",
+      cursor: cursorSVG("<path d='M8 0 C12 6 14 9 14 12 A6 6 0 1 1 2 12 C2 9 4 6 8 0 Z' fill='%2300acc1'/>", 16, 8, 8),
+      sound:{ type:'sine', freq:500, dur:0.15 } },
+
+    "halloween": { label:"Halloween", font:"'Creepster', cursive",
+      bg:"linear-gradient(160deg,#0d0500,#1a0a00,#2b1400)",
+      panel:"rgba(20,10,0,0.75)", panelBorder:"rgba(255,140,0,0.5)", accent:"#ff8c00", accentDim:"#cc7000",
+      text:"#ffe8cc", textDim:"#c99a6b", radius:"6px", shadow:"0 0 40px rgba(255,140,0,0.3)", blur:"6px",
+      nameSize:"22px",
+      song: ytSearch("halloween spooky ambient music"), effect:"bats",
+      cursor: cursorSVG("<circle cx='8' cy='9' r='6' fill='%23ff8c00'/><polygon points='3,4 6,4 4,0' fill='%23ff8c00'/><polygon points='13,4 10,4 12,0' fill='%23ff8c00'/>", 16, 8, 8),
+      sound:{ type:'triangle', freq:150, dur:0.2 } },
+
+    "sakura-spring": { label:"Sakura Spring", font:"'Caveat', cursive",
+      bg:"linear-gradient(160deg,#fff0f5,#ffe0ec,#fff5f8)",
+      panel:"rgba(255,255,255,0.65)", panelBorder:"rgba(244,143,177,0.4)", accent:"#f48fb1", accentDim:"#c2185b",
+      text:"#5a2d3a", textDim:"#a97a8a", radius:"20px", shadow:"0 8px 28px rgba(244,143,177,0.2)", blur:"8px",
+      nameSize:"24px",
+      song: ytSearch("sakura spring japanese music"), effect:"petals",
+      cursor: cursorSVG("<ellipse cx='8' cy='8' rx='7' ry='4' fill='%23ffb7d1' transform='rotate(30 8 8)'/>", 16, 8, 8),
+      sound:{ type:'sine', freq:700, dur:0.12 } }
   };
 
   const I18N = {
-    en: { name:"English", bio:"18 y/o · Hanoi<br>developer / gamer / designer",
+    en: { name:"English", bio:"16 y/o · Hanoi<br>developer / gamer / designer",
       status:{online:"online", idle:"idle", dnd:"do not disturb", offline:"offline"},
       footer:"made with ♥ on github pages", views:"views: ", style:"Style", language:"Language" },
-    vi: { name:"Tiếng Việt", bio:"18 tuổi · Hà Nội<br>developer / gamer / designer",
+    vi: { name:"Tiếng Việt", bio:"16 tuổi · Hà Nội<br>developer / gamer / designer",
       status:{online:"đang hoạt động", idle:"tạm vắng", dnd:"không làm phiền", offline:"ngoại tuyến"},
       footer:"làm bằng ♥ trên github pages", views:"lượt xem: ", style:"Giao diện", language:"Ngôn ngữ" },
-    ja: { name:"日本語", bio:"18歳 · ハノイ<br>developer / gamer / designer",
+    ja: { name:"日本語", bio:"16歳 · ハノイ<br>developer / gamer / designer",
       status:{online:"オンライン", idle:"退席中", dnd:"取り込み中", offline:"オフライン"},
       footer:"github pagesで♥を込めて作成", views:"閲覧数: ", style:"スタイル", language:"言語" },
-    ko: { name:"한국어", bio:"18세 · 하노이<br>developer / gamer / designer",
+    ko: { name:"한국어", bio:"16세 · 하노이<br>developer / gamer / designer",
       status:{online:"온라인", idle:"자리비움", dnd:"방해금지", offline:"오프라인"},
       footer:"github pages에서 ♥로 제작", views:"조회수: ", style:"스타일", language:"언어" },
-    zh: { name:"中文", bio:"18岁 · 河内<br>developer / gamer / designer",
+    zh: { name:"中文", bio:"16岁 · 河内<br>developer / gamer / designer",
       status:{online:"在线", idle:"离开", dnd:"请勿打扰", offline:"离线"},
       footer:"用 ♥ 制作于 github pages", views:"浏览量: ", style:"样式", language:"语言" },
-    fr: { name:"Français", bio:"18 ans · Hanoï<br>developer / gamer / designer",
+    fr: { name:"Français", bio:"16 ans · Hanoï<br>developer / gamer / designer",
       status:{online:"en ligne", idle:"absent", dnd:"ne pas déranger", offline:"hors ligne"},
       footer:"fait avec ♥ sur github pages", views:"vues : ", style:"Style", language:"Langue" },
-    es: { name:"Español", bio:"18 años · Hanói<br>developer / gamer / designer",
+    es: { name:"Español", bio:"16 años · Hanói<br>developer / gamer / designer",
       status:{online:"en línea", idle:"ausente", dnd:"no molestar", offline:"desconectado"},
       footer:"hecho con ♥ en github pages", views:"vistas: ", style:"Estilo", language:"Idioma" },
-    de: { name:"Deutsch", bio:"18 Jahre · Hanoi<br>developer / gamer / designer",
+    de: { name:"Deutsch", bio:"16 Jahre · Hanoi<br>developer / gamer / designer",
       status:{online:"online", idle:"abwesend", dnd:"nicht stören", offline:"offline"},
       footer:"erstellt mit ♥ auf github pages", views:"aufrufe: ", style:"Stil", language:"Sprache" },
-    th: { name:"ไทย", bio:"18 ปี · ฮานอย<br>developer / gamer / designer",
+    th: { name:"ไทย", bio:"16 ปี · ฮานอย<br>developer / gamer / designer",
       status:{online:"ออนไลน์", idle:"ไม่อยู่", dnd:"ห้ามรบกวน", offline:"ออฟไลน์"},
       footer:"สร้างด้วย ♥ บน github pages", views:"เข้าชม: ", style:"สไตล์", language:"ภาษา" },
-    id: { name:"Bahasa Indonesia", bio:"18 tahun · Hanoi<br>developer / gamer / designer",
+    id: { name:"Bahasa Indonesia", bio:"16 tahun · Hanoi<br>developer / gamer / designer",
       status:{online:"daring", idle:"idle", dnd:"jangan ganggu", offline:"luring"},
       footer:"dibuat dengan ♥ di github pages", views:"dilihat: ", style:"Gaya", language:"Bahasa" }
   };
@@ -532,7 +983,58 @@
     { t:"Dream big, start small, act now.", s:"Sưu tầm" },
     { t:"Chill vibes only.", s:"0SimpleCat" },
     { t:"Code hôm nay, bug ngày mai, fix hoài không hết.", s:"0SimpleCat" },
-    { t:"Cứ đi rồi sẽ đến.", s:"Sưu tầm" }
+    { t:"Cứ đi rồi sẽ đến.", s:"Sưu tầm" },
+    { t:"Có công mài sắt có ngày nên kim.", s:"Tục ngữ Việt Nam" },
+    { t:"Thất bại là mẹ thành công.", s:"Tục ngữ Việt Nam" },
+    { t:"Đi một ngày đàng học một sàng khôn.", s:"Tục ngữ Việt Nam" },
+    { t:"Uống nước nhớ nguồn.", s:"Tục ngữ Việt Nam" },
+    { t:"Một cây làm chẳng nên non, ba cây chụm lại nên hòn núi cao.", s:"Tục ngữ Việt Nam" },
+    { t:"Ăn quả nhớ kẻ trồng cây.", s:"Tục ngữ Việt Nam" },
+    { t:"Gần mực thì đen, gần đèn thì sáng.", s:"Tục ngữ Việt Nam" },
+    { t:"Học thầy không tày học bạn.", s:"Tục ngữ Việt Nam" },
+    { t:"Không thầy đố mày làm nên.", s:"Tục ngữ Việt Nam" },
+    { t:"Cười là liều thuốc bổ.", s:"Sưu tầm" },
+    { t:"Sống chậm lại, nghĩ khác đi, yêu thương nhiều hơn.", s:"Sưu tầm" },
+    { t:"Ngày mai là một câu trả lời khác.", s:"Sưu tầm" },
+    { t:"Đừng đợi ngày mai, hôm nay là món quà.", s:"Sưu tầm" },
+    { t:"Every expert was once a beginner.", s:"Tục ngữ" },
+    { t:"A journey of a thousand miles begins with a single step.", s:"Lão Tử" },
+    { t:"Actions speak louder than words.", s:"Tục ngữ" },
+    { t:"Where there's a will, there's a way.", s:"Tục ngữ" },
+    { t:"Practice makes perfect.", s:"Tục ngữ" },
+    { t:"The early bird catches the worm.", s:"Tục ngữ" },
+    { t:"When in doubt, respawn.", s:"0SimpleCat" },
+    { t:"gg wp, life edition.", s:"0SimpleCat" },
+    { t:"Loading motivation... 99%.", s:"0SimpleCat" },
+    { t:"Level up or log off.", s:"0SimpleCat" },
+    { t:"No cap, just vibes.", s:"0SimpleCat" },
+    { t:"Main character energy, always.", s:"Sưu tầm" },
+    { t:"Sleep is for the weak, coffee is for the strong.", s:"0SimpleCat" },
+    { t:"404: motivation not found. Try again tomorrow.", s:"0SimpleCat" },
+    { t:"Ctrl+Z không tồn tại ngoài đời thực, cẩn thận nhé.", s:"0SimpleCat" },
+    { t:"Cuộc sống giống như code, đôi khi phải refactor lại chính mình.", s:"0SimpleCat" },
+    { t:"Small steps every day lead to big changes one day.", s:"Sưu tầm" },
+    { t:"Nếu đường đời bằng phẳng, làm sao thấy được ai kiên cường.", s:"Sưu tầm" },
+    { t:"Đừng so sánh chương 1 của mình với chương 20 của người khác.", s:"Sưu tầm" },
+    { t:"Chậm mà chắc.", s:"Tục ngữ Việt Nam" },
+    { t:"Cái khó ló cái khôn.", s:"Tục ngữ Việt Nam" },
+    { t:"Có chí thì nên.", s:"Tục ngữ Việt Nam" },
+    { t:"Nước chảy đá mòn.", s:"Tục ngữ Việt Nam" },
+    { t:"Trời sinh voi, trời sinh cỏ.", s:"Tục ngữ Việt Nam" },
+    { t:"Better late than never.", s:"Tục ngữ" },
+    { t:"Out of sight, out of mind.", s:"Tục ngữ" },
+    { t:"Curiosity is the engine of achievement.", s:"Sưu tầm" },
+    { t:"Stay curious, stay hungry.", s:"Sưu tầm" },
+    { t:"Cây ngay không sợ chết đứng.", s:"Tục ngữ Việt Nam" },
+    { t:"Đèn nhà ai nấy sáng.", s:"Tục ngữ Việt Nam" },
+    { t:"Tốt gỗ hơn tốt nước sơn.", s:"Tục ngữ Việt Nam" },
+    { t:"Keep calm and grind on.", s:"0SimpleCat" },
+    { t:"Wifi mất, cuộc đời cũng mất theo.", s:"0SimpleCat" },
+    { t:"Cà phê là nhiên liệu, deadline là động lực.", s:"0SimpleCat" },
+    { t:"Not all who wander are lost.", s:"Sưu tầm" },
+    { t:"The comeback is always stronger than the setback.", s:"Sưu tầm" },
+    { t:"Ngủ đủ giấc, sống đủ đầy.", s:"Sưu tầm" },
+    { t:"Cứ làm hết mình, kết quả để trời tính.", s:"Sưu tầm" }
   ];
 
   function renderQuote(){
@@ -540,9 +1042,13 @@
     document.getElementById('quoteText').textContent = '"' + q.t + '" — ' + q.s;
   }
 
+  let currentThemeId = null;
+  let currentSound = { type:'sine', freq:600, dur:0.06 };
+
   function applyTheme(id){
     const t = THEMES[id];
     if(!t) return;
+    currentThemeId = id;
     const r = document.documentElement.style;
     r.setProperty('--font', t.font);
     r.setProperty('--bg', t.bg);
@@ -560,6 +1066,9 @@
     r.setProperty('--tracking', t.tracking || '1px');
     r.setProperty('--name-size', t.nameSize || '19px');
     r.setProperty('--img-render', t.pixelated ? 'pixelated' : 'auto');
+    r.setProperty('--cursor', t.cursor || 'auto');
+    setEffect(t.effect || null);
+    currentSound = t.sound || { type:'sine', freq:600, dur:0.06 };
     document.querySelectorAll('#themeList .menu-option').forEach(btn=>{
       btn.classList.toggle('active', btn.dataset.id === id);
     });
@@ -596,12 +1105,27 @@
 
   const themeListEl = document.getElementById('themeList');
   Object.keys(THEMES).forEach(id=>{
+    const t = THEMES[id];
+    const row = document.createElement('div');
+    row.className = 'menu-option-row';
+
     const btn = document.createElement('button');
     btn.className = 'menu-option';
     btn.dataset.id = id;
-    btn.textContent = THEMES[id].label;
-    btn.onclick = ()=> applyTheme(id);
-    themeListEl.appendChild(btn);
+    btn.textContent = t.label;
+    btn.onclick = ()=> switchTheme(id);
+
+    const song = document.createElement('a');
+    song.className = 'song-link';
+    song.href = t.song;
+    song.target = '_blank';
+    song.title = t.label + ' theme song';
+    song.textContent = '🎵';
+    song.onclick = (e)=> e.stopPropagation();
+
+    row.appendChild(btn);
+    row.appendChild(song);
+    themeListEl.appendChild(row);
   });
 
   const langListEl = document.getElementById('langList');
@@ -629,8 +1153,64 @@
   setupCollapsible('styleHeader', 'themeList');
   setupCollapsible('langHeader', 'langList');
 
+  let soundEnabled = localStorage.getItem('site_sound') === 'on';
+  document.getElementById('soundState').textContent = soundEnabled ? 'On' : 'Off';
+  let audioCtx;
+  function playClick(){
+    if(!soundEnabled) return;
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.type = currentSound.type;
+    osc.frequency.value = currentSound.freq;
+    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + currentSound.dur);
+    osc.start();
+    osc.stop(audioCtx.currentTime + currentSound.dur);
+  }
+  document.getElementById('soundToggleBtn').onclick = ()=>{
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('site_sound', soundEnabled ? 'on' : 'off');
+    document.getElementById('soundState').textContent = soundEnabled ? 'On' : 'Off';
+  };
+  document.querySelectorAll('.link').forEach(el=> el.addEventListener('click', playClick));
+
+  function updateClock(){
+    const time = new Intl.DateTimeFormat('en-GB', { timeZone:'Asia/Ho_Chi_Minh', hour:'2-digit', minute:'2-digit', hour12:false }).format(new Date());
+    document.getElementById('clockWidget').textContent = 'Hanoi ' + time;
+  }
+  updateClock();
+  setInterval(updateClock, 15000);
+
+  // countdown target — change COUNTDOWN_MONTH_DAY (MM-DD) to your birthday
+  const COUNTDOWN_MONTH_DAY = "12-31";
+  const COUNTDOWN_LABEL = "New Year";
+  function updateCountdown(){
+    const now = new Date();
+    let target = new Date(now.getFullYear() + "-" + COUNTDOWN_MONTH_DAY + "T00:00:00");
+    if(target < now) target.setFullYear(target.getFullYear() + 1);
+    const diffMs = target - now;
+    const days = Math.floor(diffMs / 86400000);
+    const hours = Math.floor((diffMs % 86400000) / 3600000);
+    document.getElementById('countdownText').textContent = '🎉 ' + COUNTDOWN_LABEL + ' in ' + days + 'd ' + hours + 'h';
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 60000);
+
+  function switchTheme(id){
+    document.getElementById('bootText').textContent = THEMES[id].label.toUpperCase() + ' — LOADING...';
+    document.getElementById('bootOverlay').classList.remove('hidden');
+    setTimeout(()=>{
+      applyTheme(id);
+      setTimeout(()=> document.getElementById('bootOverlay').classList.add('hidden'), 300);
+    }, 300);
+  }
+
   const themeIds = Object.keys(THEMES);
-  applyTheme(themeIds[Math.floor(Math.random()*themeIds.length)]);
+  const initialThemeId = themeIds[Math.floor(Math.random()*themeIds.length)];
+  applyTheme(initialThemeId);
 
   const savedLang = localStorage.getItem('site_lang');
   const browserLang = (navigator.language || 'en').split('-')[0];
@@ -662,6 +1242,19 @@
   }
   fetchStatus();
   setInterval(fetchStatus, 20000);
+
+  const discordModal = document.getElementById('discordModal');
+  document.getElementById('discordLink').onclick = ()=> discordModal.classList.add('open');
+  document.getElementById('closeDiscordModal').onclick = ()=> discordModal.classList.remove('open');
+  discordModal.addEventListener('click', (e)=>{ if(e.target === discordModal) discordModal.classList.remove('open'); });
+  document.getElementById('copyDiscordBtn').onclick = ()=>{
+    navigator.clipboard.writeText('khoaaaabeo').then(()=>{
+      const btn = document.getElementById('copyDiscordBtn');
+      const old = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(()=> btn.textContent = old, 1500);
+    });
+  };
 
   currentViews = localStorage.getItem('bio_views');
   currentViews = currentViews ? parseInt(currentViews) + 1 : 1;

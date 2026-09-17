@@ -168,12 +168,6 @@
     mask-image: radial-gradient(circle 2.6px at 6px 2.3px, transparent 99%, #000 100%);
   }
 
-  .music{
-    margin-bottom:18px;
-    border-radius:var(--radius);
-    overflow:hidden;
-  }
-
   .links{
     display:flex;
     flex-direction:column;
@@ -237,19 +231,69 @@
     position:fixed;
     inset:0;
     z-index:60;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left;
+    background: var(--tcolor, #000);
     pointer-events:none;
+    opacity:0;
   }
-  .scene-transition.play{
-    animation: sceneWipe .6s ease forwards;
-  }
+
+  /* wipe: quét màu ngang */
+  .scene-transition.wipe{ opacity:1; transform: scaleX(0); transform-origin:left; }
+  .scene-transition.wipe.play{ animation: sceneWipe .6s ease forwards; }
   @keyframes sceneWipe{
     0%{ transform: scaleX(0); transform-origin:left; }
     48%{ transform: scaleX(1); transform-origin:left; }
     52%{ transform: scaleX(1); transform-origin:right; }
     100%{ transform: scaleX(0); transform-origin:right; }
+  }
+
+  /* iris: vòng tròn mở rộng từ tâm */
+  .scene-transition.iris{ opacity:1; clip-path: circle(0 at 50% 50%); }
+  .scene-transition.iris.play{ animation: sceneIris .6s ease forwards; }
+  @keyframes sceneIris{
+    0%{ clip-path: circle(0 at 50% 50%); }
+    50%{ clip-path: circle(100vmax at 50% 50%); }
+    100%{ clip-path: circle(0 at 50% 50%); }
+  }
+
+  /* diagonal: quét chéo kiểu tốc độ */
+  .scene-transition.diagonal{ opacity:1; left:-25vw; width:150vw; transform: skewX(-15deg) scaleX(0); transform-origin:left; }
+  .scene-transition.diagonal.play{ animation: sceneDiagonal .6s ease forwards; }
+  @keyframes sceneDiagonal{
+    0%{ transform: skewX(-15deg) scaleX(0); transform-origin:left; }
+    48%{ transform: skewX(-15deg) scaleX(1); transform-origin:left; }
+    52%{ transform: skewX(-15deg) scaleX(1); transform-origin:right; }
+    100%{ transform: skewX(-15deg) scaleX(0); transform-origin:right; }
+  }
+
+  /* curtain: hai màn đóng mở từ trên/dưới */
+  .scene-transition.curtain{ background:transparent; }
+  .scene-transition.curtain::before,
+  .scene-transition.curtain::after{
+    content:'';
+    position:absolute;
+    left:0; right:0;
+    height:0%;
+    background: var(--tcolor, #000);
+  }
+  .scene-transition.curtain::before{ top:0; }
+  .scene-transition.curtain::after{ bottom:0; }
+  .scene-transition.curtain.play::before,
+  .scene-transition.curtain.play::after{
+    animation: curtainMove .6s ease forwards;
+  }
+  @keyframes curtainMove{
+    0%{ height:0%; }
+    50%{ height:50%; }
+    100%{ height:0%; }
+  }
+
+  /* petals: mờ ảo, nhẹ nhàng */
+  .scene-transition.petals{ opacity:0; }
+  .scene-transition.petals.play{ animation: scenePetals .7s ease forwards; }
+  @keyframes scenePetals{
+    0%{ opacity:0; filter:blur(0px); }
+    50%{ opacity:0.85; filter:blur(3px); }
+    100%{ opacity:0; filter:blur(0px); }
   }
 
   .menu-btn{
@@ -419,7 +463,6 @@
 
 <div class="clock-widget" id="clockWidget">Hanoi --:--</div>
 
-<button class="menu-btn" id="musicBtn" style="right:64px;" aria-label="Music">🔈</button>
 
 <button class="menu-btn" id="menuBtn" aria-label="Menu">
   <span></span><span></span><span></span>
@@ -439,8 +482,8 @@
     <div class="menu-options" id="langList"></div>
   </div>
   <div class="menu-group">
-    <button class="menu-group-header" id="soundToggleBtn">
-      <span>Sound</span><span id="soundState">Off</span>
+    <button class="menu-group-header" id="musicToggleBtn">
+      <span>Music</span><span id="musicState">Off</span>
     </button>
   </div>
 </div>
@@ -474,10 +517,6 @@
     <a class="link" href="https://github.com/0SimpleCatt" target="_blank">GitHub</a>
     <a class="link" href="https://www.tiktok.com/@silycatxd?_r=1&_t=ZS-99krPo1X81k" target="_blank">TikTok</a>
     <a class="link" href="https://youtube.com/@simplecatxd?si=FiM49_x284IVZm87" target="_blank">YouTube</a>
-  </div>
-
-  <div class="music reveal" style="animation-delay:.6s">
-    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/5ioA8AWwBgqLx8h4tNCkqX?utm_source=generator" width="100%" height="352" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
   </div>
 
   <p class="footer" id="footerText">made with ♥ on github pages</p>
@@ -757,24 +796,34 @@
 
   const THEMES = {
     "cyber-gaming": { label:"Cyber Gaming", font:"'Orbitron', sans-serif",
+      transitionType:"wipe",
       bg:"radial-gradient(circle at 20% 20%, rgba(57,255,136,0.15), transparent 45%), radial-gradient(circle at 80% 80%, rgba(57,255,136,0.08), transparent 50%), linear-gradient(180deg,#050807,#0a0f0d)",
       panel:"rgba(10,20,15,0.72)", panelBorder:"rgba(57,255,136,0.35)", accent:"#39ff88", accentDim:"#22c467",
       text:"#d9ffe9", textDim:"#7fae91", radius:"8px", shadow:"0 0 40px rgba(57,255,136,0.15)", blur:"10px",
-      radio: "https://ice1.somafm.com/poptron-128-mp3" },
+      radio: "https://ice1.somafm.com/poptron-128-mp3",
+      cursor: cursorSVG("<circle cx='8' cy='8' r='3' fill='%2339ff88'/><circle cx='8' cy='8' r='7' fill='none' stroke='%2339ff88' stroke-width='1.5'/>", 16, 8, 8),
+      sound:{ type:'square', freq:500, dur:0.07 } },
 
     "cosmic-space": { label:"Cosmic Space", font:"'Exo 2', sans-serif",
+      transitionType:"iris",
       bg:"radial-gradient(circle at 30% 20%, rgba(167,139,250,0.25), transparent 50%), radial-gradient(circle at 75% 70%, rgba(56,189,248,0.15), transparent 50%), linear-gradient(180deg,#0b0620,#04030c)",
       panel:"rgba(20,14,40,0.65)", panelBorder:"rgba(167,139,250,0.35)", accent:"#a78bfa", accentDim:"#7c5cd6",
       text:"#ece7ff", textDim:"#9a8fc4", radius:"18px", shadow:"0 0 50px rgba(167,139,250,0.25)", blur:"10px",
-      radio: "https://ice1.somafm.com/spacestation-128-mp3", effect:"stars" },
+      radio: "https://ice1.somafm.com/spacestation-128-mp3", effect:"stars",
+      cursor: cursorSVG("<polygon points='8,0 10,6 16,6 11,10 13,16 8,12 3,16 5,10 0,6 6,6' fill='%23a78bfa'/>", 16, 8, 8),
+      sound:{ type:'sine', freq:300, dur:0.3 } },
 
     "glassmorphism": { label:"Glassmorphism", font:"'Poppins', sans-serif",
+      transitionType:"iris",
       bg:"linear-gradient(135deg, #f9e0ff, #dff3ff, #e0fff5)",
       panel:"rgba(255,255,255,0.35)", panelBorder:"rgba(255,255,255,0.6)", accent:"#8b5cf6", accentDim:"#6d43d1",
       text:"#3a2e52", textDim:"#7c6f96", radius:"22px", shadow:"0 8px 32px rgba(139,92,246,0.18)", blur:"22px",
-      radio: "https://ice1.somafm.com/groovesalad-128-mp3", effect:"bubbles" },
+      radio: "https://ice1.somafm.com/groovesalad-128-mp3", effect:"bubbles",
+      cursor: cursorSVG("<circle cx='8' cy='8' r='6' fill='%238b5cf6' fill-opacity='0.5' stroke='%23fff' stroke-width='1'/>", 16, 8, 8),
+      sound:{ type:'sine', freq:900, dur:0.15 } },
 
     "cyberpunk": { label:"Cyberpunk", font:"'Audiowide', sans-serif",
+      transitionType:"diagonal",
       bg:"radial-gradient(circle at 25% 15%, rgba(255,0,200,0.25), transparent 45%), radial-gradient(circle at 80% 85%, rgba(0,255,255,0.2), transparent 50%), linear-gradient(180deg,#0a0014,#000)",
       panel:"rgba(15,0,25,0.7)", panelBorder:"rgba(255,0,200,0.5)", accent:"#ff2bd6", accentDim:"#00e5ff",
       text:"#fdf0ff", textDim:"#c78fd9", radius:"4px", shadow:"0 0 45px rgba(255,0,200,0.35), 0 0 30px rgba(0,229,255,0.25)", blur:"8px",
@@ -783,24 +832,34 @@
       sound:{ type:'sawtooth', freq:900, dur:0.08 } },
 
     "dark-minimal": { label:"Dark Minimal", font:"'Inter', sans-serif",
+      transitionType:"wipe",
       bg:"linear-gradient(180deg,#050505,#111111)",
       panel:"rgba(20,20,20,0.6)", panelBorder:"rgba(255,255,255,0.12)", accent:"#ffffff", accentDim:"#9a9a9a",
       text:"#f2f2f2", textDim:"#8a8a8a", radius:"4px", shadow:"0 4px 24px rgba(0,0,0,0.4)", blur:"6px",
-      radio: "https://ice1.somafm.com/dronezone-128-mp3" },
+      radio: "https://ice1.somafm.com/dronezone-128-mp3",
+      cursor: cursorSVG("<circle cx='8' cy='8' r='3' fill='%23ffffff'/>", 16, 8, 8),
+      sound:{ type:'sine', freq:400, dur:0.05 } },
 
     "daily-life": { label:"Daily Life", font:"'Quicksand', sans-serif",
+      transitionType:"curtain",
       bg:"linear-gradient(160deg,#fff6ec,#ffe8dd,#fff1e6)",
       panel:"rgba(255,255,255,0.7)", panelBorder:"rgba(255,138,101,0.3)", accent:"#ff8a65", accentDim:"#e46f4c",
       text:"#5c4033", textDim:"#a08877", radius:"20px", shadow:"0 8px 30px rgba(255,138,101,0.2)", blur:"8px",
-      radio: "https://ice1.somafm.com/illstreet-128-mp3" },
+      radio: "https://ice1.somafm.com/illstreet-128-mp3",
+      cursor: cursorSVG("<circle cx='8' cy='8' r='5' fill='%23ff8a65'/>", 16, 8, 8),
+      sound:{ type:'triangle', freq:500, dur:0.12 } },
 
     "nature-modern": { label:"Nature Modern", font:"'Poppins', sans-serif",
+      transitionType:"curtain",
       bg:"linear-gradient(160deg,#eef7ee,#dff0e2,#f4fbf5)",
       panel:"rgba(255,255,255,0.65)", panelBorder:"rgba(76,175,125,0.35)", accent:"#4caf7d", accentDim:"#357e58",
       text:"#264034", textDim:"#6f8b7c", radius:"16px", shadow:"0 8px 28px rgba(76,175,125,0.2)", blur:"8px",
-      radio: "https://ice1.somafm.com/groovesalad-128-mp3", effect:"leaves" },
+      radio: "https://ice1.somafm.com/groovesalad-128-mp3", effect:"leaves",
+      cursor: cursorSVG("<ellipse cx='8' cy='8' rx='6' ry='4' fill='%234caf7d' transform='rotate(20 8 8)'/>", 16, 8, 8),
+      sound:{ type:'sine', freq:350, dur:0.2 } },
 
     "luxury": { label:"Luxury", font:"'Playfair Display', serif",
+      transitionType:"iris",
       bg:"linear-gradient(160deg,#0c0c0c,#1a1a1a)",
       panel:"rgba(15,15,15,0.75)", panelBorder:"rgba(212,175,55,0.5)", accent:"#d4af37", accentDim:"#a6841f",
       text:"#f2e9d0", textDim:"#a99a72", radius:"2px", shadow:"0 0 40px rgba(212,175,55,0.18)", blur:"6px",
@@ -810,12 +869,16 @@
       sound:{ type:'sine', freq:1200, dur:0.25 } },
 
     "ai-future": { label:"AI Future", font:"'Space Grotesk', sans-serif",
+      transitionType:"wipe",
       bg:"linear-gradient(160deg,#f4f8ff,#e4ecff,#ffffff)",
       panel:"rgba(255,255,255,0.6)", panelBorder:"rgba(59,130,246,0.35)", accent:"#3b82f6", accentDim:"#2563eb",
       text:"#1c2b45", textDim:"#7288ac", radius:"12px", shadow:"0 8px 30px rgba(59,130,246,0.22)", blur:"10px",
-      radio: "https://ice1.somafm.com/synphaera-128-mp3", effect:"dots" },
+      radio: "https://ice1.somafm.com/synphaera-128-mp3", effect:"dots",
+      cursor: cursorSVG("<rect x='4' y='4' width='8' height='8' fill='%233b82f6' transform='rotate(45 8 8)'/>", 16, 8, 8),
+      sound:{ type:'sawtooth', freq:750, dur:0.1 } },
 
     "racing": { label:"Racing", font:"'Rajdhani', sans-serif",
+      transitionType:"diagonal",
       bg:"linear-gradient(160deg,#0b0b0b,#1a0000,#0b0b0b)",
       panel:"rgba(20,10,10,0.72)", panelBorder:"rgba(239,68,68,0.5)", accent:"#ef4444", accentDim:"#b91c1c",
       text:"#fdeaea", textDim:"#c98f8f", radius:"4px", shadow:"0 0 40px rgba(239,68,68,0.25)", blur:"6px",
@@ -825,6 +888,7 @@
       sound:{ type:'square', freq:200, dur:0.06 } },
 
     "retro-arcade": { label:"Retro Arcade", font:"'VT323', monospace",
+      transitionType:"wipe",
       bg:"linear-gradient(160deg,#1a0033,#33004d,#1a0033)",
       panel:"rgba(30,0,50,0.65)", panelBorder:"rgba(0,229,255,0.45)", accent:"#00e5ff", accentDim:"#ff2bd6",
       text:"#eafcff", textDim:"#9fb8c9", radius:"10px", shadow:"0 0 40px rgba(0,229,255,0.3), 0 0 25px rgba(255,43,214,0.2)", blur:"6px",
@@ -834,32 +898,45 @@
       sound:{ type:'square', freq:660, dur:0.09 } },
 
     "social-hub": { label:"Social Hub", font:"'Poppins', sans-serif",
+      transitionType:"curtain",
       bg:"linear-gradient(135deg,#ffe0f0,#ffe8d6,#e0f0ff)",
       panel:"rgba(255,255,255,0.6)", panelBorder:"rgba(236,72,153,0.35)", accent:"#ec4899", accentDim:"#be185d",
       text:"#4a2b3a", textDim:"#9c7a8a", radius:"26px", shadow:"0 8px 30px rgba(236,72,153,0.2)", blur:"10px",
-      radio: "https://ice1.somafm.com/poptron-128-mp3", effect:"confetti" },
+      radio: "https://ice1.somafm.com/poptron-128-mp3", effect:"confetti",
+      cursor: cursorSVG("<circle cx='8' cy='8' r='5' fill='%23ec4899'/>", 16, 8, 8),
+      sound:{ type:'triangle', freq:800, dur:0.1 } },
 
     "creative-studio": { label:"Creative Studio", font:"'Fraunces', serif",
+      transitionType:"diagonal",
       bg:"linear-gradient(150deg,#fff4dc,#ffe0cc,#fdeecb)",
       panel:"rgba(255,255,255,0.55)", panelBorder:"rgba(20,184,166,0.4)", accent:"#14b8a6", accentDim:"#0d8f81",
       text:"#3a2e1f", textDim:"#8a7a5f", radius:"14px", shadow:"0 8px 26px rgba(20,184,166,0.18)", blur:"8px",
       borderStyle:"dashed",
-      radio: "https://ice1.somafm.com/n5md-128-mp3", effect:"paint" },
+      radio: "https://ice1.somafm.com/n5md-128-mp3", effect:"paint",
+      cursor: cursorSVG("<path d='M8 0 C12 6 14 9 14 12 A6 6 0 1 1 2 12 C2 9 4 6 8 0 Z' fill='%2314b8a6'/>", 16, 8, 8),
+      sound:{ type:'sine', freq:550, dur:0.15 } },
 
     "urban-street": { label:"Urban Street", font:"'Bebas Neue', sans-serif",
+      transitionType:"diagonal",
       bg:"linear-gradient(160deg,#1c1c1c,#2b2b2b)",
       panel:"rgba(30,30,30,0.75)", panelBorder:"rgba(250,204,21,0.5)", accent:"#facc15", accentDim:"#ca9a0c",
       text:"#f5f5f5", textDim:"#a3a3a3", radius:"2px", shadow:"0 6px 26px rgba(250,204,21,0.15)", blur:"4px",
       transform:"uppercase", tracking:"1.5px", nameSize:"24px",
-      radio: "https://ice1.somafm.com/beatblender-128-mp3", effect:"spray" },
+      radio: "https://ice1.somafm.com/beatblender-128-mp3", effect:"spray",
+      cursor: cursorSVG("<circle cx='8' cy='8' r='5' fill='%23facc15'/>", 16, 8, 8),
+      sound:{ type:'square', freq:300, dur:0.08 } },
 
     "modern-tech": { label:"Modern Tech", font:"'Sora', sans-serif",
+      transitionType:"wipe",
       bg:"linear-gradient(160deg,#f7f9fc,#eef1f7,#ffffff)",
       panel:"rgba(255,255,255,0.7)", panelBorder:"rgba(99,102,241,0.3)", accent:"#6366f1", accentDim:"#4338ca",
       text:"#1e2233", textDim:"#767c94", radius:"14px", shadow:"0 8px 28px rgba(99,102,241,0.18)", blur:"10px",
-      radio: "https://ice1.somafm.com/synphaera-128-mp3" },
+      radio: "https://ice1.somafm.com/synphaera-128-mp3",
+      cursor: cursorSVG("<rect x='3' y='3' width='10' height='10' rx='2' fill='%236366f1'/>", 16, 8, 8),
+      sound:{ type:'sine', freq:650, dur:0.08 } },
 
     "pixel": { label:"Pixel", font:"'Press Start 2P', monospace",
+      transitionType:"wipe",
       bg:"linear-gradient(180deg,#1a1a3d,#0d0d26)",
       panel:"rgba(20,20,50,0.85)", panelBorder:"#fbbf24", accent:"#fbbf24", accentDim:"#d19b0f",
       text:"#f5f5ff", textDim:"#9a9ac9", radius:"0px", shadow:"6px 6px 0 rgba(251,191,36,0.5)", blur:"0px",
@@ -869,13 +946,17 @@
       sound:{ type:'square', freq:440, dur:0.07 } },
 
     "vaporwave": { label:"Vaporwave", font:"'Righteous', sans-serif",
+      transitionType:"iris",
       bg:"linear-gradient(135deg,#2b0a4e,#ff6ec7,#6fd6ff)",
       panel:"rgba(40,10,70,0.55)", panelBorder:"rgba(255,110,199,0.5)", accent:"#ff6ec7", accentDim:"#6fd6ff",
       text:"#fff0fb", textDim:"#d9a8d1", radius:"6px", shadow:"0 0 40px rgba(255,110,199,0.3), 0 0 25px rgba(111,214,255,0.25)", blur:"8px",
       nameSize:"20px",
-      radio: "https://ice1.somafm.com/vaporwaves-128-mp3", effect:"grid" },
+      radio: "https://ice1.somafm.com/vaporwaves-128-mp3", effect:"grid",
+      cursor: cursorSVG("<polygon points='8,0 16,8 8,16 0,8' fill='%23ff6ec7' stroke='%236fd6ff' stroke-width='1'/>", 16, 8, 8),
+      sound:{ type:'sine', freq:450, dur:0.25 } },
 
     "ocean-breeze": { label:"Ocean Breeze", font:"'Comfortaa', sans-serif",
+      transitionType:"iris",
       bg:"linear-gradient(160deg,#e0f7fa,#b2ebf2,#e0f7fa)",
       panel:"rgba(255,255,255,0.6)", panelBorder:"rgba(0,172,193,0.35)", accent:"#00acc1", accentDim:"#007c91",
       text:"#053b42", textDim:"#4f8790", radius:"20px", shadow:"0 8px 30px rgba(0,172,193,0.2)", blur:"10px",
@@ -884,6 +965,7 @@
       sound:{ type:'sine', freq:500, dur:0.15 } },
 
     "halloween": { label:"Halloween", font:"'Creepster', cursive",
+      transitionType:"petals",
       bg:"linear-gradient(160deg,#0d0500,#1a0a00,#2b1400)",
       panel:"rgba(20,10,0,0.75)", panelBorder:"rgba(255,140,0,0.5)", accent:"#ff8c00", accentDim:"#cc7000",
       text:"#ffe8cc", textDim:"#c99a6b", radius:"6px", shadow:"0 0 40px rgba(255,140,0,0.3)", blur:"6px",
@@ -893,6 +975,7 @@
       sound:{ type:'triangle', freq:150, dur:0.2 } },
 
     "sakura-spring": { label:"Sakura Spring", font:"'Caveat', cursive",
+      transitionType:"petals",
       bg:"linear-gradient(160deg,#fff0f5,#ffe0ec,#fff5f8)",
       panel:"rgba(255,255,255,0.65)", panelBorder:"rgba(244,143,177,0.4)", accent:"#f48fb1", accentDim:"#c2185b",
       text:"#5a2d3a", textDim:"#a97a8a", radius:"20px", shadow:"0 8px 28px rgba(244,143,177,0.2)", blur:"8px",
@@ -1007,7 +1090,6 @@
   }
 
   let currentThemeId = null;
-  let currentSound = { type:'sine', freq:600, dur:0.06 };
   const bgAudio = new Audio();
   bgAudio.preload = 'none';
   let musicOn = false;
@@ -1035,7 +1117,6 @@
     r.setProperty('--img-render', t.pixelated ? 'pixelated' : 'auto');
     r.setProperty('--cursor', t.cursor || 'auto');
     setEffect(t.effect || null);
-    currentSound = t.sound || { type:'sine', freq:600, dur:0.06 };
     if(musicOn && t.radio){
       bgAudio.src = t.radio;
       bgAudio.play().catch(()=>{});
@@ -1074,13 +1155,29 @@
     localStorage.setItem('site_lang', code);
   }
 
+  let audioCtx;
+  function playThemeSound(id){
+    const s = (THEMES[id] && THEMES[id].sound) || { type:'sine', freq:600, dur:0.08 };
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.type = s.type;
+    osc.frequency.value = s.freq;
+    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + s.dur);
+    osc.start();
+    osc.stop(audioCtx.currentTime + s.dur);
+  }
+
   const themeListEl = document.getElementById('themeList');
   Object.keys(THEMES).forEach(id=>{
     const btn = document.createElement('button');
     btn.className = 'menu-option';
     btn.dataset.id = id;
     btn.textContent = THEMES[id].label;
-    btn.onclick = ()=> switchTheme(id);
+    btn.onclick = ()=>{ playThemeSound(id); switchTheme(id); };
     themeListEl.appendChild(btn);
   });
 
@@ -1109,41 +1206,9 @@
   setupCollapsible('styleHeader', 'themeList');
   setupCollapsible('langHeader', 'langList');
 
-  let soundEnabled = localStorage.getItem('site_sound') === 'on';
-  document.getElementById('soundState').textContent = soundEnabled ? 'On' : 'Off';
-  let audioCtx;
-  function playClick(){
-    if(!soundEnabled) return;
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.type = currentSound.type;
-    osc.frequency.value = currentSound.freq;
-    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + currentSound.dur);
-    osc.start();
-    osc.stop(audioCtx.currentTime + currentSound.dur);
-  }
-  document.getElementById('soundToggleBtn').onclick = ()=>{
-    soundEnabled = !soundEnabled;
-    localStorage.setItem('site_sound', soundEnabled ? 'on' : 'off');
-    document.getElementById('soundState').textContent = soundEnabled ? 'On' : 'Off';
-  };
-  document.querySelectorAll('.link').forEach(el=> el.addEventListener('click', playClick));
-
-  function updateClock(){
-    const time = new Intl.DateTimeFormat('en-GB', { timeZone:'Asia/Ho_Chi_Minh', hour:'2-digit', minute:'2-digit', hour12:false }).format(new Date());
-    document.getElementById('clockWidget').textContent = 'Hanoi ' + time;
-  }
-  updateClock();
-  setInterval(updateClock, 15000);
-
-  const musicBtn = document.getElementById('musicBtn');
-  musicBtn.onclick = ()=>{
+  document.getElementById('musicToggleBtn').onclick = ()=>{
     musicOn = !musicOn;
-    musicBtn.textContent = musicOn ? '🔊' : '🔈';
+    document.getElementById('musicState').textContent = musicOn ? 'On' : 'Off';
     if(musicOn){
       const t = THEMES[currentThemeId];
       if(t && t.radio){
@@ -1155,12 +1220,22 @@
     }
   };
 
+  function updateClock(){
+    const time = new Intl.DateTimeFormat('en-GB', { timeZone:'Asia/Ho_Chi_Minh', hour:'2-digit', minute:'2-digit', hour12:false }).format(new Date());
+    document.getElementById('clockWidget').textContent = 'Hanoi ' + time;
+  }
+  updateClock();
+  setInterval(updateClock, 15000);
+
+  const TRANSITION_TYPES = ['wipe','iris','diagonal','curtain','petals'];
   function switchTheme(id){
+    const t = THEMES[id];
+    const type = t.transitionType || 'wipe';
     const el = document.getElementById('sceneTransition');
-    el.style.background = THEMES[id].accent;
-    el.classList.remove('play');
+    el.style.setProperty('--tcolor', t.accent);
+    el.classList.remove('play', ...TRANSITION_TYPES);
     void el.offsetWidth; // restart animation
-    el.classList.add('play');
+    el.classList.add(type, 'play');
     setTimeout(()=> applyTheme(id), 280);
   }
 

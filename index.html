@@ -233,34 +233,23 @@
     white-space:nowrap;
   }
 
-  .boot-overlay{
+  .scene-transition{
     position:fixed;
     inset:0;
     z-index:60;
-    background:var(--panel);
-    backdrop-filter: blur(var(--blur));
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    opacity:1;
-    transition:opacity .4s ease;
-  }
-  .boot-overlay.hidden{
-    opacity:0;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
     pointer-events:none;
   }
-  .boot-text{
-    font-family: var(--font);
-    color:var(--accent);
-    font-size:14px;
-    letter-spacing:2px;
-    text-transform:uppercase;
+  .scene-transition.play{
+    animation: sceneWipe .6s ease forwards;
   }
-
-  .countdown{
-    font-size:11px;
-    color:var(--accent-dim);
-    margin:0 0 16px;
+  @keyframes sceneWipe{
+    0%{ transform: scaleX(0); transform-origin:left; }
+    48%{ transform: scaleX(1); transform-origin:left; }
+    52%{ transform: scaleX(1); transform-origin:right; }
+    100%{ transform: scaleX(0); transform-origin:right; }
   }
 
   .menu-btn{
@@ -342,18 +331,12 @@
   }
   .menu-options.open{ display:block; }
 
-  .menu-option-row{
-    display:flex;
-    align-items:center;
-    gap:4px;
-    margin-bottom:4px;
-  }
   .menu-option{
-    flex:1;
     display:block;
     width:100%;
     text-align:left;
     padding:8px 10px;
+    margin-bottom:4px;
     border:1px solid transparent;
     border-radius:8px;
     background:transparent;
@@ -370,22 +353,6 @@
     color:var(--accent);
     background: color-mix(in srgb, var(--accent) 12%, transparent);
   }
-  .song-link{
-    flex-shrink:0;
-    width:28px;
-    height:28px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:8px;
-    text-decoration:none;
-    font-size:13px;
-    color:var(--accent-dim);
-  }
-  .song-link:hover{
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-  }
-
   .modal-overlay{
     position:fixed;
     inset:0;
@@ -448,11 +415,11 @@
 <div class="orb orb2"></div>
 <div class="orb orb3"></div>
 
-<div class="boot-overlay hidden" id="bootOverlay">
-  <p class="boot-text" id="bootText">BOOTING...</p>
-</div>
+<div class="scene-transition" id="sceneTransition"></div>
 
 <div class="clock-widget" id="clockWidget">Hanoi --:--</div>
+
+<button class="menu-btn" id="musicBtn" style="right:64px;" aria-label="Music">🔈</button>
 
 <button class="menu-btn" id="menuBtn" aria-label="Menu">
   <span></span><span></span><span></span>
@@ -501,8 +468,6 @@
 
   <p class="quote reveal" style="animation-delay:.45s" id="quoteText"></p>
 
-  <p class="countdown reveal" style="animation-delay:.47s" id="countdownText"></p>
-
   <div class="links reveal" style="animation-delay:.5s">
     <div class="link" id="discordLink">khoaaaabeo</div>
     <a class="link" href="https://www.facebook.com/share/1BpE677ybK/" target="_blank">Nomnom</a>
@@ -520,7 +485,6 @@
 </div>
 
 <script>
-  function ytSearch(q){ return "https://www.youtube.com/results?search_query=" + encodeURIComponent(q); }
   function cursorSVG(inner, size, hotX, hotY){
     const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='" + size + "' height='" + size + "' viewBox='0 0 " + size + " " + size + "'>" + inner + "</svg>";
     return "url(\"data:image/svg+xml," + encodeURIComponent(svg) + "\") " + hotX + " " + hotY + ", auto";
@@ -796,25 +760,25 @@
       bg:"radial-gradient(circle at 20% 20%, rgba(57,255,136,0.15), transparent 45%), radial-gradient(circle at 80% 80%, rgba(57,255,136,0.08), transparent 50%), linear-gradient(180deg,#050807,#0a0f0d)",
       panel:"rgba(10,20,15,0.72)", panelBorder:"rgba(57,255,136,0.35)", accent:"#39ff88", accentDim:"#22c467",
       text:"#d9ffe9", textDim:"#7fae91", radius:"8px", shadow:"0 0 40px rgba(57,255,136,0.15)", blur:"10px",
-      song: ytSearch("cyberpunk gaming synthwave music") },
+      radio: "https://ice1.somafm.com/poptron-128-mp3" },
 
     "cosmic-space": { label:"Cosmic Space", font:"'Exo 2', sans-serif",
       bg:"radial-gradient(circle at 30% 20%, rgba(167,139,250,0.25), transparent 50%), radial-gradient(circle at 75% 70%, rgba(56,189,248,0.15), transparent 50%), linear-gradient(180deg,#0b0620,#04030c)",
       panel:"rgba(20,14,40,0.65)", panelBorder:"rgba(167,139,250,0.35)", accent:"#a78bfa", accentDim:"#7c5cd6",
       text:"#ece7ff", textDim:"#9a8fc4", radius:"18px", shadow:"0 0 50px rgba(167,139,250,0.25)", blur:"10px",
-      song: ytSearch("space ambient music deep focus"), effect:"stars" },
+      radio: "https://ice1.somafm.com/spacestation-128-mp3", effect:"stars" },
 
     "glassmorphism": { label:"Glassmorphism", font:"'Poppins', sans-serif",
       bg:"linear-gradient(135deg, #f9e0ff, #dff3ff, #e0fff5)",
       panel:"rgba(255,255,255,0.35)", panelBorder:"rgba(255,255,255,0.6)", accent:"#8b5cf6", accentDim:"#6d43d1",
       text:"#3a2e52", textDim:"#7c6f96", radius:"22px", shadow:"0 8px 32px rgba(139,92,246,0.18)", blur:"22px",
-      song: ytSearch("chill lofi glass ambient music"), effect:"bubbles" },
+      radio: "https://ice1.somafm.com/groovesalad-128-mp3", effect:"bubbles" },
 
     "cyberpunk": { label:"Cyberpunk", font:"'Audiowide', sans-serif",
       bg:"radial-gradient(circle at 25% 15%, rgba(255,0,200,0.25), transparent 45%), radial-gradient(circle at 80% 85%, rgba(0,255,255,0.2), transparent 50%), linear-gradient(180deg,#0a0014,#000)",
       panel:"rgba(15,0,25,0.7)", panelBorder:"rgba(255,0,200,0.5)", accent:"#ff2bd6", accentDim:"#00e5ff",
       text:"#fdf0ff", textDim:"#c78fd9", radius:"4px", shadow:"0 0 45px rgba(255,0,200,0.35), 0 0 30px rgba(0,229,255,0.25)", blur:"8px",
-      song: ytSearch("cyberpunk 2077 style music mix"), effect:"matrix",
+      radio: "https://ice1.somafm.com/digitalis-128-mp3", effect:"matrix",
       cursor: cursorSVG("<line x1='12' y1='2' x2='12' y2='22' stroke='%23ff2bd6' stroke-width='2'/><line x1='2' y1='12' x2='22' y2='12' stroke='%2300e5ff' stroke-width='2'/>", 24, 12, 12),
       sound:{ type:'sawtooth', freq:900, dur:0.08 } },
 
@@ -822,26 +786,26 @@
       bg:"linear-gradient(180deg,#050505,#111111)",
       panel:"rgba(20,20,20,0.6)", panelBorder:"rgba(255,255,255,0.12)", accent:"#ffffff", accentDim:"#9a9a9a",
       text:"#f2f2f2", textDim:"#8a8a8a", radius:"4px", shadow:"0 4px 24px rgba(0,0,0,0.4)", blur:"6px",
-      song: ytSearch("minimal dark ambient soundtrack") },
+      radio: "https://ice1.somafm.com/dronezone-128-mp3" },
 
     "daily-life": { label:"Daily Life", font:"'Quicksand', sans-serif",
       bg:"linear-gradient(160deg,#fff6ec,#ffe8dd,#fff1e6)",
       panel:"rgba(255,255,255,0.7)", panelBorder:"rgba(255,138,101,0.3)", accent:"#ff8a65", accentDim:"#e46f4c",
       text:"#5c4033", textDim:"#a08877", radius:"20px", shadow:"0 8px 30px rgba(255,138,101,0.2)", blur:"8px",
-      song: ytSearch("cozy daily life lofi music") },
+      radio: "https://ice1.somafm.com/illstreet-128-mp3" },
 
     "nature-modern": { label:"Nature Modern", font:"'Poppins', sans-serif",
       bg:"linear-gradient(160deg,#eef7ee,#dff0e2,#f4fbf5)",
       panel:"rgba(255,255,255,0.65)", panelBorder:"rgba(76,175,125,0.35)", accent:"#4caf7d", accentDim:"#357e58",
       text:"#264034", textDim:"#6f8b7c", radius:"16px", shadow:"0 8px 28px rgba(76,175,125,0.2)", blur:"8px",
-      song: ytSearch("nature ambient calm music"), effect:"leaves" },
+      radio: "https://ice1.somafm.com/groovesalad-128-mp3", effect:"leaves" },
 
     "luxury": { label:"Luxury", font:"'Playfair Display', serif",
       bg:"linear-gradient(160deg,#0c0c0c,#1a1a1a)",
       panel:"rgba(15,15,15,0.75)", panelBorder:"rgba(212,175,55,0.5)", accent:"#d4af37", accentDim:"#a6841f",
       text:"#f2e9d0", textDim:"#a99a72", radius:"2px", shadow:"0 0 40px rgba(212,175,55,0.18)", blur:"6px",
       transform:"uppercase", tracking:"2px", nameSize:"20px",
-      song: ytSearch("luxury lounge jazz music"), effect:"sparkles-gold",
+      radio: "https://ice1.somafm.com/secretagent-128-mp3", effect:"sparkles-gold",
       cursor: cursorSVG("<polygon points='8,0 16,8 8,16 0,8' fill='%23d4af37'/>", 16, 8, 8),
       sound:{ type:'sine', freq:1200, dur:0.25 } },
 
@@ -849,14 +813,14 @@
       bg:"linear-gradient(160deg,#f4f8ff,#e4ecff,#ffffff)",
       panel:"rgba(255,255,255,0.6)", panelBorder:"rgba(59,130,246,0.35)", accent:"#3b82f6", accentDim:"#2563eb",
       text:"#1c2b45", textDim:"#7288ac", radius:"12px", shadow:"0 8px 30px rgba(59,130,246,0.22)", blur:"10px",
-      song: ytSearch("futuristic ai synth music"), effect:"dots" },
+      radio: "https://ice1.somafm.com/synphaera-128-mp3", effect:"dots" },
 
     "racing": { label:"Racing", font:"'Rajdhani', sans-serif",
       bg:"linear-gradient(160deg,#0b0b0b,#1a0000,#0b0b0b)",
       panel:"rgba(20,10,10,0.72)", panelBorder:"rgba(239,68,68,0.5)", accent:"#ef4444", accentDim:"#b91c1c",
       text:"#fdeaea", textDim:"#c98f8f", radius:"4px", shadow:"0 0 40px rgba(239,68,68,0.25)", blur:"6px",
       transform:"uppercase", tracking:"1.5px",
-      song: ytSearch("racing game high energy music"), effect:"speedlines",
+      radio: "https://ice1.somafm.com/thetrip-128-mp3", effect:"speedlines",
       cursor: cursorSVG("<polygon points='0,0 16,8 0,16' fill='%23ef4444'/>", 16, 0, 8),
       sound:{ type:'square', freq:200, dur:0.06 } },
 
@@ -865,7 +829,7 @@
       panel:"rgba(30,0,50,0.65)", panelBorder:"rgba(0,229,255,0.45)", accent:"#00e5ff", accentDim:"#ff2bd6",
       text:"#eafcff", textDim:"#9fb8c9", radius:"10px", shadow:"0 0 40px rgba(0,229,255,0.3), 0 0 25px rgba(255,43,214,0.2)", blur:"6px",
       nameSize:"26px",
-      song: ytSearch("80s retro arcade synthwave"), effect:"sparkles-neon",
+      radio: "https://ice1.somafm.com/u80s-128-mp3", effect:"sparkles-neon",
       cursor: cursorSVG("<polygon points='10,0 20,10 10,20 0,10' fill='%2300e5ff' stroke='%23ff2bd6' stroke-width='1'/>", 20, 10, 10),
       sound:{ type:'square', freq:660, dur:0.09 } },
 
@@ -873,34 +837,34 @@
       bg:"linear-gradient(135deg,#ffe0f0,#ffe8d6,#e0f0ff)",
       panel:"rgba(255,255,255,0.6)", panelBorder:"rgba(236,72,153,0.35)", accent:"#ec4899", accentDim:"#be185d",
       text:"#4a2b3a", textDim:"#9c7a8a", radius:"26px", shadow:"0 8px 30px rgba(236,72,153,0.2)", blur:"10px",
-      song: ytSearch("upbeat pop party mix"), effect:"confetti" },
+      radio: "https://ice1.somafm.com/poptron-128-mp3", effect:"confetti" },
 
     "creative-studio": { label:"Creative Studio", font:"'Fraunces', serif",
       bg:"linear-gradient(150deg,#fff4dc,#ffe0cc,#fdeecb)",
       panel:"rgba(255,255,255,0.55)", panelBorder:"rgba(20,184,166,0.4)", accent:"#14b8a6", accentDim:"#0d8f81",
       text:"#3a2e1f", textDim:"#8a7a5f", radius:"14px", shadow:"0 8px 26px rgba(20,184,166,0.18)", blur:"8px",
       borderStyle:"dashed",
-      song: ytSearch("creative studio jazz hip hop beats"), effect:"paint" },
+      radio: "https://ice1.somafm.com/n5md-128-mp3", effect:"paint" },
 
     "urban-street": { label:"Urban Street", font:"'Bebas Neue', sans-serif",
       bg:"linear-gradient(160deg,#1c1c1c,#2b2b2b)",
       panel:"rgba(30,30,30,0.75)", panelBorder:"rgba(250,204,21,0.5)", accent:"#facc15", accentDim:"#ca9a0c",
       text:"#f5f5f5", textDim:"#a3a3a3", radius:"2px", shadow:"0 6px 26px rgba(250,204,21,0.15)", blur:"4px",
       transform:"uppercase", tracking:"1.5px", nameSize:"24px",
-      song: ytSearch("urban street hip hop beats"), effect:"spray" },
+      radio: "https://ice1.somafm.com/beatblender-128-mp3", effect:"spray" },
 
     "modern-tech": { label:"Modern Tech", font:"'Sora', sans-serif",
       bg:"linear-gradient(160deg,#f7f9fc,#eef1f7,#ffffff)",
       panel:"rgba(255,255,255,0.7)", panelBorder:"rgba(99,102,241,0.3)", accent:"#6366f1", accentDim:"#4338ca",
       text:"#1e2233", textDim:"#767c94", radius:"14px", shadow:"0 8px 28px rgba(99,102,241,0.18)", blur:"10px",
-      song: ytSearch("modern tech corporate ambient music") },
+      radio: "https://ice1.somafm.com/synphaera-128-mp3" },
 
     "pixel": { label:"Pixel", font:"'Press Start 2P', monospace",
       bg:"linear-gradient(180deg,#1a1a3d,#0d0d26)",
       panel:"rgba(20,20,50,0.85)", panelBorder:"#fbbf24", accent:"#fbbf24", accentDim:"#d19b0f",
       text:"#f5f5ff", textDim:"#9a9ac9", radius:"0px", shadow:"6px 6px 0 rgba(251,191,36,0.5)", blur:"0px",
       nameSize:"12px", pixelated:true,
-      song: ytSearch("8 bit chiptune music"), effect:"pixels",
+      radio: "https://ice1.somafm.com/u80s-128-mp3", effect:"pixels",
       cursor: cursorSVG("<rect width='16' height='16' fill='%23fbbf24' stroke='%23000' stroke-width='2'/>", 16, 8, 8),
       sound:{ type:'square', freq:440, dur:0.07 } },
 
@@ -909,13 +873,13 @@
       panel:"rgba(40,10,70,0.55)", panelBorder:"rgba(255,110,199,0.5)", accent:"#ff6ec7", accentDim:"#6fd6ff",
       text:"#fff0fb", textDim:"#d9a8d1", radius:"6px", shadow:"0 0 40px rgba(255,110,199,0.3), 0 0 25px rgba(111,214,255,0.25)", blur:"8px",
       nameSize:"20px",
-      song: ytSearch("vaporwave aesthetic music mix"), effect:"grid" },
+      radio: "https://ice1.somafm.com/vaporwaves-128-mp3", effect:"grid" },
 
     "ocean-breeze": { label:"Ocean Breeze", font:"'Comfortaa', sans-serif",
       bg:"linear-gradient(160deg,#e0f7fa,#b2ebf2,#e0f7fa)",
       panel:"rgba(255,255,255,0.6)", panelBorder:"rgba(0,172,193,0.35)", accent:"#00acc1", accentDim:"#007c91",
       text:"#053b42", textDim:"#4f8790", radius:"20px", shadow:"0 8px 30px rgba(0,172,193,0.2)", blur:"10px",
-      song: ytSearch("ocean waves calm music"), effect:"bubbles",
+      radio: "https://ice1.somafm.com/dronezone-128-mp3", effect:"bubbles",
       cursor: cursorSVG("<path d='M8 0 C12 6 14 9 14 12 A6 6 0 1 1 2 12 C2 9 4 6 8 0 Z' fill='%2300acc1'/>", 16, 8, 8),
       sound:{ type:'sine', freq:500, dur:0.15 } },
 
@@ -924,7 +888,7 @@
       panel:"rgba(20,10,0,0.75)", panelBorder:"rgba(255,140,0,0.5)", accent:"#ff8c00", accentDim:"#cc7000",
       text:"#ffe8cc", textDim:"#c99a6b", radius:"6px", shadow:"0 0 40px rgba(255,140,0,0.3)", blur:"6px",
       nameSize:"22px",
-      song: ytSearch("halloween spooky ambient music"), effect:"bats",
+      radio: "https://ice1.somafm.com/digitalis-128-mp3", effect:"bats",
       cursor: cursorSVG("<circle cx='8' cy='9' r='6' fill='%23ff8c00'/><polygon points='3,4 6,4 4,0' fill='%23ff8c00'/><polygon points='13,4 10,4 12,0' fill='%23ff8c00'/>", 16, 8, 8),
       sound:{ type:'triangle', freq:150, dur:0.2 } },
 
@@ -933,7 +897,7 @@
       panel:"rgba(255,255,255,0.65)", panelBorder:"rgba(244,143,177,0.4)", accent:"#f48fb1", accentDim:"#c2185b",
       text:"#5a2d3a", textDim:"#a97a8a", radius:"20px", shadow:"0 8px 28px rgba(244,143,177,0.2)", blur:"8px",
       nameSize:"24px",
-      song: ytSearch("sakura spring japanese music"), effect:"petals",
+      radio: "https://ice1.somafm.com/illstreet-128-mp3", effect:"petals",
       cursor: cursorSVG("<ellipse cx='8' cy='8' rx='7' ry='4' fill='%23ffb7d1' transform='rotate(30 8 8)'/>", 16, 8, 8),
       sound:{ type:'sine', freq:700, dur:0.12 } }
   };
@@ -1044,6 +1008,9 @@
 
   let currentThemeId = null;
   let currentSound = { type:'sine', freq:600, dur:0.06 };
+  const bgAudio = new Audio();
+  bgAudio.preload = 'none';
+  let musicOn = false;
 
   function applyTheme(id){
     const t = THEMES[id];
@@ -1069,6 +1036,10 @@
     r.setProperty('--cursor', t.cursor || 'auto');
     setEffect(t.effect || null);
     currentSound = t.sound || { type:'sine', freq:600, dur:0.06 };
+    if(musicOn && t.radio){
+      bgAudio.src = t.radio;
+      bgAudio.play().catch(()=>{});
+    }
     document.querySelectorAll('#themeList .menu-option').forEach(btn=>{
       btn.classList.toggle('active', btn.dataset.id === id);
     });
@@ -1105,27 +1076,12 @@
 
   const themeListEl = document.getElementById('themeList');
   Object.keys(THEMES).forEach(id=>{
-    const t = THEMES[id];
-    const row = document.createElement('div');
-    row.className = 'menu-option-row';
-
     const btn = document.createElement('button');
     btn.className = 'menu-option';
     btn.dataset.id = id;
-    btn.textContent = t.label;
+    btn.textContent = THEMES[id].label;
     btn.onclick = ()=> switchTheme(id);
-
-    const song = document.createElement('a');
-    song.className = 'song-link';
-    song.href = t.song;
-    song.target = '_blank';
-    song.title = t.label + ' theme song';
-    song.textContent = '🎵';
-    song.onclick = (e)=> e.stopPropagation();
-
-    row.appendChild(btn);
-    row.appendChild(song);
-    themeListEl.appendChild(row);
+    themeListEl.appendChild(btn);
   });
 
   const langListEl = document.getElementById('langList');
@@ -1184,28 +1140,28 @@
   updateClock();
   setInterval(updateClock, 15000);
 
-  // countdown target — change COUNTDOWN_MONTH_DAY (MM-DD) to your birthday
-  const COUNTDOWN_MONTH_DAY = "12-31";
-  const COUNTDOWN_LABEL = "New Year";
-  function updateCountdown(){
-    const now = new Date();
-    let target = new Date(now.getFullYear() + "-" + COUNTDOWN_MONTH_DAY + "T00:00:00");
-    if(target < now) target.setFullYear(target.getFullYear() + 1);
-    const diffMs = target - now;
-    const days = Math.floor(diffMs / 86400000);
-    const hours = Math.floor((diffMs % 86400000) / 3600000);
-    document.getElementById('countdownText').textContent = '🎉 ' + COUNTDOWN_LABEL + ' in ' + days + 'd ' + hours + 'h';
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 60000);
+  const musicBtn = document.getElementById('musicBtn');
+  musicBtn.onclick = ()=>{
+    musicOn = !musicOn;
+    musicBtn.textContent = musicOn ? '🔊' : '🔈';
+    if(musicOn){
+      const t = THEMES[currentThemeId];
+      if(t && t.radio){
+        bgAudio.src = t.radio;
+        bgAudio.play().catch(()=>{});
+      }
+    } else {
+      bgAudio.pause();
+    }
+  };
 
   function switchTheme(id){
-    document.getElementById('bootText').textContent = THEMES[id].label.toUpperCase() + ' — LOADING...';
-    document.getElementById('bootOverlay').classList.remove('hidden');
-    setTimeout(()=>{
-      applyTheme(id);
-      setTimeout(()=> document.getElementById('bootOverlay').classList.add('hidden'), 300);
-    }, 300);
+    const el = document.getElementById('sceneTransition');
+    el.style.background = THEMES[id].accent;
+    el.classList.remove('play');
+    void el.offsetWidth; // restart animation
+    el.classList.add('play');
+    setTimeout(()=> applyTheme(id), 280);
   }
 
   const themeIds = Object.keys(THEMES);
